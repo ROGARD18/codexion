@@ -2,17 +2,17 @@ NAME      := codexion
 CC        := cc
 CFLAGS    := -Wall -Wextra -Werror
 
-SRCDIR    := .
+SRCDIR    := test
 DEPDIR    := .deps
 INCDIR    := includes
-BUILDDIR  := build
+BUILDDIR  := .build
 
-SRCFILES  :=
+SRCFILES  := test/test.c
 
-OBJS      := $(addprefix $(BUILDDIR)/,$(SRCFILES:.c:.o))
+OBJS      := $(addprefix $(BUILDDIR)/,$(SRCFILES:.c=.o))
 HEADERS   := $(INCDIR)/codexion.h
 
-DEPFLAGS  := -MD -MP -MF $(DEPDIR)/$*.debug
+DEPFLAGS  := -MD -MP -MF $(DEPDIR)/$*.d
 
 all: $(NAME)
 
@@ -35,4 +35,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY all clean fclean re
+.PHONY: all clean fclean re
