@@ -3,12 +3,12 @@ CC        := cc
 CFLAGS    := -Wall -Wextra -Werror
 PTHFLAG   := -pthread
 
-SRCDIR    := . parsing
+SRCDIR    := source
 DEPDIR    := .deps
 INCDIR    := includes
-BUILDDIR  := .build
+BUILDDIR  := build
 
-SRCFILES  := main.c source/parsing.c
+SRCFILES  := main.c source/parsing.c source/sleep.c source/threads_functions.c
 
 OBJS      := $(addprefix $(BUILDDIR)/,$(SRCFILES:.c=.o))
 HEADERS   := $(INCDIR)/codexion.h
@@ -29,7 +29,7 @@ vpath %.c $(SRCDIR)
 
 clean:
 	rm -rf $(DEPDIR)
-	rm -rf $(BUILDIR)
+	rm -rf $(BUILDDIR)
 
 fclean: clean
 	rm -f $(NAME)

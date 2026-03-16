@@ -6,12 +6,14 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/16 01:04:24 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/16 17:08:33 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
+
+#include <pthread.h>
 
 typedef	struct
 {
@@ -25,6 +27,20 @@ typedef	struct
 	char	*sheduler;
 }	t_config;
 
+typedef struct
+{
+	int id;
+	pthread_t thread;
+}	t_thread;
+
+typedef struct
+{
+	int thread_id;
+	pthread_mutex_t *mutex;
+}	t_tools;
+
 t_config	*parsing(int ac, char **av);
+void sleep_ms(int milliseconds);
+void *thread_work(void *tools);
 
 #endif
