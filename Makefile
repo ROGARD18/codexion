@@ -1,13 +1,14 @@
 NAME      := codexion
 CC        := cc
 CFLAGS    := -Wall -Wextra -Werror
+PTHFLAG   := -lpthread
 
-SRCDIR    := test
+SRCDIR    := . parsing
 DEPDIR    := .deps
 INCDIR    := includes
 BUILDDIR  := .build
 
-SRCFILES  := test/test.c
+SRCFILES  := main.c source/parsing.c
 
 OBJS      := $(addprefix $(BUILDDIR)/,$(SRCFILES:.c=.o))
 HEADERS   := $(INCDIR)/codexion.h
