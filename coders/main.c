@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/16 21:14:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/16 21:19:41 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,18 @@ int    create_threads(t_tools *tools)
     int i;
 
     tools->threads = malloc(sizeof(pthread_t) * tools->config->number_of_coders);
-    tools->threads_data = malloc(sizeof(t_thread_data) * tools->config->number_of_coders);
-	if (!tools->threads || !tools-> threads_data)
+    tools->td = malloc(sizeof(t_thread_data) * tools->config->number_of_coders);
+	if (!tools->threads || !tools-> td)
 		return (-1);
     pthread_mutex_init(&tools->dongle_mutex, NULL);
 
     i = 0;
     while (i < tools->config->number_of_coders)
     {
-        tools->threads_data[i].thread_id = i + 1;
-        tools->threads_data[i].config = tools->config;
-        tools->threads_data[i].dongle_mutex = &tools->dongle_mutex;
-        pthread_create(&tools->threads[i], NULL, thread_work, &tools->threads_data[i]);
+        tools->td[i].thread_id = i + 1;
+        tools->td[i].config = tools->config;
+        tools->td[i].dongle_mutex = &tools->dongle_mutex;
+        pthread_create(&tools->threads[i], NULL, thread_work, &tools->td[i]);
         i++;
     }
 

@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/16 21:10:12 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/16 21:19:14 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef struct s_tools
 {
     t_config        *config;
     pthread_mutex_t dongle_mutex;
-    t_thread_data   *threads_data;
+    t_thread_data   *td;
     pthread_t       *threads;
 }   t_tools;
 
