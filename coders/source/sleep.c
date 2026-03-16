@@ -6,13 +6,13 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 15:54:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/16 17:05:38 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/16 19:08:01 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 
-void sleep_ms(int milliseconds)
+void	sleep_ms(int milliseconds)
 {
-    usleep(milliseconds * 1000);
+	usleep(milliseconds * 1000);
 }
