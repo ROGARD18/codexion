@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/16 19:10:58 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/16 21:10:12 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,23 +35,20 @@ typedef struct s_config
 	char	*sheduler;
 }	t_config;
 
-typedef struct s_thread
+typedef struct s_thread_data
 {
-	int			id;
-	pthread_t	thread;
-}	t_thread;
+    int             thread_id;
+    t_config        *config;
+    pthread_mutex_t *dongle_mutex;
+}   t_thread_data;
 
 typedef struct s_tools
 {
-	int				thread_id;
-	pthread_mutex_t	*mutex;
-	t_config		*config;
-}	t_tools;
-
-typedef struct s_dongle
-{
-	ptrhread_mutex_t	mtx;
-}	t_dongle;
+    t_config        *config;
+    pthread_mutex_t dongle_mutex;
+    t_thread_data   *threads_data;
+    pthread_t       *threads;
+}   t_tools;
 
 t_config	*parsing(int ac, char **av);
 void		sleep_ms(int milliseconds);

@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/16 19:03:13 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/16 21:14:48 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void	create_threads(int number_of_coders, void *(*thread_work)(void *),
-	t_tools *tools)
+int    create_threads(t_tools *tools)
 {
-	int			i;
-	pthread_t	thread_list[number_of_coders - 1];
+    int i;
 
-	i = 0;
-	while (number_of_coders--)
-	{
-		tools->thread_id = i + 1;
-		pthread_create(&thread_list[i++], NULL, thread_work, tools);
-	}
-	i = 0;
-	while (i < number_of_coders - 1)
-	{
-		pthread_join(thread_list[i], NULL);
-		i++;
-	}
+    tools->threads = malloc(sizeof(pthread_t) * tools->config->number_of_coders);
+    tools->threads_data = malloc(sizeof(t_thread_data) * tools->config->number_of_coders);
+	if (!tools->threads || !tools-> threads_data)
+		return (-1);
+    pthread_mutex_init(&tools->dongle_mutex, NULL);
+
+    i = 0;
+    while (i < tools->config->number_of_coders)
+    {
+        tools->threads_data[i].thread_id = i + 1;
+        tools->threads_data[i].config = tools->config;
+        tools->threads_data[i].dongle_mutex = &tools->dongle_mutex;
+        pthread_create(&tools->threads[i], NULL, thread_work, &tools->threads_data[i]);
+        i++;
+    }
+
+    i = 0;
+    while (i < tools->config->number_of_coders)
+    {
+        pthread_join(tools->threads[i], NULL);
+        i++;
+    }
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -44,10 +53,9 @@ int	main(int ac, char **av)
 	if (!config)
 		return (-1);
 	tools = malloc(sizeof(t_tools));
-	tools->mutex = &mtx;
 	tools->config = config;
-	pthread_mutex_init(&mtx, NULL);
-	create_threads(config->number_of_coders, &thread_work, tools);
+	pthread_mutex_init(&tools->dongle_mutex, NULL);
+	create_threads(tools);
 	printf("numbers_of_coders = %d\n", config->number_of_coders);
 	free(config);
 	free(tools);

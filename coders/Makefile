@@ -18,21 +18,23 @@ DEPFLAGS  := -MD -MP -MF $(DEPDIR)/$*.d
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME)
+	@$(CC) $(OBJS) -o $(NAME)
 
 $(BUILDDIR)/%.o: %.c $(HEADERS)
 	@mkdir -p $(dir $@) $(DEPDIR)/$(dir $<)
-	$(CC) $(DEPFLAGS) -I$(INCDIR) -c $< -o $@
+	@$(CC) $(DEPFLAGS) -I$(INCDIR) -c $< -o $@
 
 vpath %.c $(SRCDIR)
 -include $(addprefix $(DEPDIR)/,$(SRCFILES:.c=.d))
 
 clean:
-	rm -rf $(DEPDIR)
-	rm -rf $(BUILDDIR)
+	@rm -rf $(DEPDIR)
+	@rm -rf $(BUILDDIR)
+	@echo "CLEANN"
+	@echo "-------"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
 
