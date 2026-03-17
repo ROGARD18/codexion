@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/16 21:46:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/17 14:56:42 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ typedef struct s_thread_data
 {
 	int				thread_id;
 	t_config		*config;
-	pthread_mutex_t	*dongle_mutex;
+	pthread_mutex_t	*dongle_left;
+	pthread_mutex_t	*dongle_right;
 }					t_thread_data;
 
 typedef struct s_tools
 {
-	pthread_mutex_t	dongle_mutex;
 	t_thread_data	*td;
 	pthread_t		*threads;
 }					t_tools;
