@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   threads_functions.c                                :+:      :+:    :+:   */
+/*   thread_function.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/17 16:01:53 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/17 16:51:49 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <stdio.h>
 
-void take_dongles(t_thread_data *td)
+void	take_dongles(t_thread_data *td)
 {
 	if (td->config->number_of_coders == 1)
 	{
@@ -36,7 +36,7 @@ void take_dongles(t_thread_data *td)
 	}
 }
 
-void released_dongles(t_thread_data *td)
+void	released_dongles(t_thread_data *td)
 {
 	if (td->config->number_of_coders == 1)
 	{
@@ -48,26 +48,8 @@ void released_dongles(t_thread_data *td)
 		pthread_mutex_unlock(td->dongle_left);
 		sleep_ms(td->config->dongle_cooldown);
 		pthread_mutex_unlock(td->dongle_right);
-		sleep_ms(td->config->dongle_cooldown);	
+		sleep_ms(td->config->dongle_cooldown);
 	}
-}
-
-void	compiling(int id, int time_to_compile)
-{
-	printf("%d is compiling\n", id);
-	sleep_ms(time_to_compile);
-}
-
-void	debugging(int id, int time_to_debug)
-{
-	printf("%d is debugging\n", id);
-	sleep_ms(time_to_debug);
-}
-
-void	refactoring(int id, int time_to_refactor)
-{
-	printf("%d is refactoring\n", id);
-	sleep_ms(time_to_refactor);
 }
 
 void	*thread_work(void *arg)

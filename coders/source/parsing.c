@@ -11,10 +11,10 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 static void	*handling_parsing_error(t_error error, t_config *config)
 {
@@ -51,8 +51,8 @@ t_config	*parsing(int ac, char **av)
 		|| config->time_to_refactor < 0 || config->dongle_cooldown < 0
 		|| config->number_of_compiles_requiered < 0)
 		return (handling_parsing_error(NEGATIVE_ERROR, config));
-	if (strcmp(config->sheduler, "fifo") != 0
-		&& strcmp(config->sheduler, "edf") != 0)
+	if (strcmp(config->sheduler, "fifo") != 0 && strcmp(config->sheduler,
+			"edf") != 0)
 		return (handling_parsing_error(SHEDULER_ERROR, config));
 	return (config);
 }
