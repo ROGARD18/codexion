@@ -6,7 +6,7 @@
 /*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/17 16:56:07 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/17 17:06:19 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,7 @@ void				refactoring(int id, int time_to_refactor);
 void				sleep_ms(int milliseconds);
 void				init_all_mutex(int nb_coders, pthread_mutex_t *mtx);
 void				destroy_all_mutex(int nb_coders, pthread_mutex_t *mtx);
+int					free_all(t_config *config, t_tools *tools, pthread_mutex_t *mtx);
+
 
 #endif

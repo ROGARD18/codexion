@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   work_functions.c                                   :+:      :+:    :+:   */
+/*   free_all.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/03/17 17:09:10 by rogard-anto      ###   ########.fr       */
+/*   Created: 2026/03/17 17:05:23 by rogard-anto       #+#    #+#             */
+/*   Updated: 2026/03/17 17:11:06 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <stdio.h>
+#include <stdlib.h>
 
-void	compiling(int id, int time_to_compile)
+int	free_all(t_config *config, t_tools *tools, pthread_mutex_t *mtx)
 {
-	printf("%d is compiling\n", id);
-	sleep_ms(time_to_compile);
-}
-
-void	debugging(int id, int time_to_debug)
-{
-	printf("%d is debugging\n", id);
-	sleep_ms(time_to_debug);
-}
-
-void	refactoring(int id, int time_to_refactor)
-{
-	printf("%d is refactoring\n", id);
-	sleep_ms(time_to_refactor);
+	if (config)
+		free(config);
+	if (mtx)
+		free(mtx);
+	if (tools)
+	{
+		if (tools->threads)
+			free(tools->threads);
+		if (tools->td)
+			free(tools->td);
+		free(tools);
+	}
+	return (-1);
 }

@@ -3,12 +3,13 @@ CC        := cc
 CFLAGS    := -Wall -Wextra -Werror
 PTHFLAG   := -lpthread
 
-SRCDIR    := . parsing
+SRCDIR    := . source source/utils
 DEPDIR    := .deps
 INCDIR    := includes
 BUILDDIR  := build
 
-SRCFILES  := main.c source/parsing.c source/sleep.c source/threads_functions.c
+SRCFILES  := main.c parsing.c sleep.c thread_function.c mutex_utils.c \
+			 work_functions.c free_all.c
 
 OBJS      := $(addprefix $(BUILDDIR)/,$(SRCFILES:.c=.o))
 HEADERS   := $(INCDIR)/codexion.h

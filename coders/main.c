@@ -6,42 +6,13 @@
 /*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/17 16:47:37 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/17 17:10:15 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-int	free_all(t_config *config, t_tools *tools, pthread_mutex_t *mtx)
-{
-	if (config)
-		free(config);
-	if (mtx)
-		free(mtx);
-	if (tools)
-	{
-		if (tools->threads)
-			free(tools->threads);
-		if (tools->td)
-			free(tools->td);
-		free(tools);
-	}
-	return (-1);
-}
-
-void	init_all_mutex(int nb_coders, pthread_mutex_t *mtx)
-{
-	while (nb_coders--)
-		pthread_mutex_init(&(*mtx++), NULL);
-}
-
-void	destroy_all_mutex(int nb_coders, pthread_mutex_t *mtx)
-{
-	while (nb_coders--)
-		pthread_mutex_destroy(&(*mtx++));
-}
 
 int	create_threads(t_tools *tools, t_config *config, pthread_mutex_t *mtx)
 {
