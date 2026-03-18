@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/18 16:51:07 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/18 20:51:30 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,15 @@ int	create_threads(t_threads *threads, t_config *config, pthread_mutex_t *mtx)
 	threads->td = malloc(sizeof(t_thread_data) * config->number_of_coders);
 	if (!threads->td)
 		return (-1);
+	pthread_create(&monitor, NULL, monitor_work, &threads);
+	pthread_join(monitor, NULL);
 	init_all_mutex(config->number_of_coders, mtx);
-	threads->td->monitor = &monitor;
 	i = 0;
 	while (i < config->number_of_coders)
 	{
 		threads->td[i].id = i + 1;
 		threads->td[i].config = config;
+		threads->td[i].burnout = false;
 		if (config->number_of_coders == 1)
 		{
 			threads->td[i].dongle_left = NULL;

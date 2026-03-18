@@ -3,29 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   free_all.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
+/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 17:05:23 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/03/17 17:11:06 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/18 16:56:43 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <stdlib.h>
 
-int	free_all(t_config *config, t_tools *tools, pthread_mutex_t *mtx)
+int	free_all(t_config *config, t_threads *threads, pthread_mutex_t *mtx)
 {
 	if (config)
 		free(config);
 	if (mtx)
 		free(mtx);
-	if (tools)
+	if (threads)
 	{
-		if (tools->threads)
-			free(tools->threads);
-		if (tools->td)
-			free(tools->td);
-		free(tools);
+		if (threads->threads)
+			free(threads->threads);
+		if (threads->td)
+			free(threads->td);
+		free(threads);
 	}
 	return (-1);
 }
