@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/18 21:05:51 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/18 22:00:29 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,19 @@ void	*monitor_work(void *arg)
 	threads = (t_threads *)arg;
 	td_list = threads->td;
 	threads_list = threads->threads;
+	threads->run = true;
 	while (threads->run)
 	{
 		i = 0;
 		while (threads_list[i])
 		{
-			if (td[i]->burnout)
+			if (td_list[i].burnout)
             {
-                threads->run = false
+                threads->run = false;
                 break;
             }
             i++;
+			sleep_ms(1);
 		}
 	}
 	return (NULL);

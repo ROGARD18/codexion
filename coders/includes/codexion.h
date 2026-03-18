@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/18 21:04:21 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/18 21:55:50 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void				*thread_work(void *threads);
 void				compiling(int id, t_thread_data *td);
 void				debugging(int id, t_thread_data *td);
 void				refactoring(int id, t_thread_data *td);
+void				*monitor_work(void *arg);
 
 // ===SOURCE/UTILS===
 void				sleep_ms(int milliseconds);

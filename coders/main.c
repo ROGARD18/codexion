@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/18 20:51:30 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/18 21:58:26 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	create_threads(t_threads *threads, t_config *config, pthread_mutex_t *mtx)
 	if (!threads->td)
 		return (-1);
 	pthread_create(&monitor, NULL, monitor_work, &threads);
-	pthread_join(monitor, NULL);
+	// pthread_join(monitor, NULL);
 	init_all_mutex(config->number_of_coders, mtx);
 	i = 0;
 	while (i < config->number_of_coders)
