@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/18 16:15:36 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/18 16:50:02 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ typedef struct s_thread_data
 	pthread_mutex_t	*dongle_right;
 }					t_thread_data;
 
-typedef struct s_tools
+typedef struct s_threads
 {
 	t_thread_data	*td;
 	pthread_t		*threads;
-}					t_tools;
+}					t_threads;
 
 // ===SOURCE===
 t_config			*parsing(int ac, char **av);
