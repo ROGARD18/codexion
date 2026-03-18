@@ -1,1 +1,16 @@
-numbers_of_coders = N threads and N dongle
+Man:
+-gettimeofday : int gettimeofday(struct timeval *tv,
+                                 struct timezone *tz);
+                
+
+-time_t : Used for time in seconds.  According to POSIX,
+          it shall be an integer type.
+        
+-suseconds_t :  Used  for time in microseconds.  According
+                to POSIX, it shall be a signed integer
+                type capable of storing values at least in
+                the range [-1, 1000000], and the 
+                implementation  shall support one or more
+                programming environments where the width
+                of suseconds_t is no greater than the width
+                of the type long.

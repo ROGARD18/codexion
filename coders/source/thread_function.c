@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   thread_function.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
+/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/17 16:51:49 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/18 16:37:17 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,21 @@ void	take_dongles(t_thread_data *td)
 	if (td->config->number_of_coders == 1)
 	{
 		pthread_mutex_lock(td->dongle_right);
-		printf("%d has taken a dongle\n", td->thread_id);
+		printf("%d has taken a dongle\n", td->id);
 	}
-	else if (td->thread_id == td->config->number_of_coders)
+	else if (td->id == td->config->number_of_coders)
 	{
 		pthread_mutex_lock(td->dongle_left);
-		printf("%d has taken a dongle\n", td->thread_id);
+		printf("%d has taken a dongle\n", td->id);
 		pthread_mutex_lock(td->dongle_right);
-		printf("%d has taken a dongle\n", td->thread_id);
+		printf("%d has taken a dongle\n", td->id);
 	}
 	else
 	{
 		pthread_mutex_lock(td->dongle_right);
-		printf("%d has taken a dongle\n", td->thread_id);
+		printf("%d has taken a dongle\n", td->id);
 		pthread_mutex_lock(td->dongle_left);
-		printf("%d has taken a dongle\n", td->thread_id);
+		printf("%d has taken a dongle\n", td->id);
 	}
 }
 
@@ -55,12 +55,24 @@ void	released_dongles(t_thread_data *td)
 void	*thread_work(void *arg)
 {
 	t_thread_data	*td;
+	long			seconds;
+	long			microseconds;
 
 	td = (t_thread_data *)arg;
+	gettimeofday(&td->start, NULL);
 	take_dongles(td);
-	compiling(td->thread_id, td->config->time_to_compile);
+	compiling(td->id, td);
 	released_dongles(td);
-	debugging(td->thread_id, td->config->time_to_debug);
-	refactoring(td->thread_id, td->config->time_to_refactor);
+	gettimeofday(&td->end, NULL);
+	seconds = td->end.tv_sec - td->start.tv_sec;
+	microseconds = td->end.tv_usec - td->start.tv_usec;
+	if (microseconds < 0) {
+        seconds -= 1;
+        microseconds += 1000000;
+    }
+	printf("(%d) a écoulé : %ld secondes et %ld microsecondes\n", td->id,
+		seconds, microseconds);
+	debugging(td->id, td);
+	refactoring(td->id, td);
 	return (NULL);
 }

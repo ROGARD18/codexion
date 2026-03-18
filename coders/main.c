@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
+/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/17 17:10:15 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/18 16:15:57 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 
 int	create_threads(t_tools *tools, t_config *config, pthread_mutex_t *mtx)
 {
-	int	i;
+	int			i;
+	pthread_t	monitor;
 
 	tools->threads = malloc(sizeof(pthread_t) * config->number_of_coders);
 	if (!tools->threads)
@@ -25,10 +26,11 @@ int	create_threads(t_tools *tools, t_config *config, pthread_mutex_t *mtx)
 	if (!tools->td)
 		return (-1);
 	init_all_mutex(config->number_of_coders, mtx);
+	tools->td->monitor = &monitor;
 	i = 0;
 	while (i < config->number_of_coders)
 	{
-		tools->td[i].thread_id = i + 1;
+		tools->td[i].id = i + 1;
 		tools->td[i].config = config;
 		if (config->number_of_coders == 1)
 		{
