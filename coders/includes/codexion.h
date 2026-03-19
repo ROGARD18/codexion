@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/18 21:55:50 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/19 12:15:33 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,17 @@ typedef struct s_config
 typedef struct s_thread_data
 {
 	int				id;
+	int				compiled_time;
 	t_config		*config;
 	struct timeval	last_compile_start;
-	bool			burnout;
+	int				burnout;
 	pthread_mutex_t	*dongle_left;
 	pthread_mutex_t	*dongle_right;
 }					t_thread_data;
 
 typedef struct s_threads
 {
-	bool			run;
+	int				run;
 	t_thread_data	*td;
 	pthread_t		*threads;
 }					t_threads;
