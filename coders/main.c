@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/23 19:40:24 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/23 22:36:07 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,11 @@ int	create_threads(t_threads *threads_obj, t_config *config, pthread_mutex_t *mt
 	while (i < config->number_of_coders)
 	{
 		threads_obj->td[i].id = i + 1;
-		printf("**id** = %d\n", threads_obj->td[0].id);
-		printf("**id = %d\n", threads_obj->td[i].id);
 		threads_obj->td[i].config = config;
-		threads_obj->td[i].run = &run;
+		threads_obj->td[i].compiled_time = 0;
+		threads_obj->td[i].last_compile_start = 0;
+		threads_obj->td[i].time_start = time;
 		threads_obj->td[i].alive = true;
-		printf("**time_to_burnout = %lld\n", config->time_to_burnout);
 		if (config->number_of_coders == 1)
 		{
 			threads_obj->td[i].dongle_left = NULL;

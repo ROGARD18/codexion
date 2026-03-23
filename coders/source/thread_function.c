@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/23 19:32:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/23 22:36:20 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,31 @@
 
 void	take_dongles(t_thread_data *td)
 {
+	long long time;
+
 	if (td->config->number_of_coders == 1)
 	{
+		time = get_time() - td->time_start;
 		pthread_mutex_lock(td->dongle_right);
-		printf("%d has taken a dongle\n", td->id);
+		printf("%lld %d has taken a dongle\n",time, td->id);
 	}
 	else if (td->id == td->config->number_of_coders)
 	{
 		pthread_mutex_lock(td->dongle_left);
-		printf("%d has taken a dongle\n", td->id);
+		time = get_time() - td->time_start;
+		printf("%lld %d has taken a dongle\n",time, td->id);
 		pthread_mutex_lock(td->dongle_right);
-		printf("%d has taken a dongle\n", td->id);
+		time = get_time() - td->time_start;
+		printf("%lld %d has taken a dongle\n",time, td->id);
 	}
 	else
 	{
 		pthread_mutex_lock(td->dongle_right);
-		printf("%d has taken a dongle\n", td->id);
+		time = get_time() - td->time_start;
+		printf("%lld %d has taken a dongle\n",time, td->id);
 		pthread_mutex_lock(td->dongle_left);
-		printf("%d has taken a dongle\n", td->id);
+		time = get_time() - td->time_start;
+		printf("%lld %d has taken a dongle\n",time, td->id);
 	}
 }
 
@@ -55,9 +62,7 @@ void	released_dongles(t_thread_data *td)
 void	*thread_work(void *arg)
 {
 	t_thread_data	*td;
-	int				index;
 
-	index = 0;
 	td = (t_thread_data *)arg;
 	while (td->config->number_of_compiles_requiered > 0)
 	{
@@ -66,17 +71,15 @@ void	*thread_work(void *arg)
 			printf("\nKILL THREAD n* %d\n\n", td->id);
 			return NULL;
 		}
-		index++;
 		td->compiled_time += 1;
 		take_dongles(td);
-		printf("%d compiles restantes ----------------> %d\n", td->id,
-			td->config->number_of_compiles_requiered);
+		// printf("%d compiles restantes ----------------> %d\n", td->id,
+			// td->config->number_of_compiles_requiered);
 		compiling(td->id, td);
 		released_dongles(td);
 		debugging(td->id, td);
 		refactoring(td->id, td);
 		td->config->number_of_compiles_requiered -= 1;
 	}
-	printf("Compiled %d time\n", index);
 	return (NULL);
 }
