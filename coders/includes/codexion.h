@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/19 12:15:33 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/23 16:37:29 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define CODEXION_H
 
 # include <pthread.h>
-# include <sys/time.h>
 # include <stdbool.h>
 
 typedef enum e_error
@@ -28,12 +27,12 @@ typedef enum e_error
 typedef struct s_config
 {
 	int				number_of_coders;
-	int				time_to_burnout;
-	int				time_to_compile;
-	int				time_to_debug;
-	int				time_to_refactor;
+	long long		time_to_burnout;
+	long long		time_to_compile;
+	long long		time_to_debug;
+	long long		time_to_refactor;
 	int				number_of_compiles_requiered;
-	int				dongle_cooldown;
+	long long		dongle_cooldown;
 	char			*sheduler;
 }					t_config;
 
@@ -42,15 +41,16 @@ typedef struct s_thread_data
 	int				id;
 	int				compiled_time;
 	t_config		*config;
-	struct timeval	last_compile_start;
-	int				burnout;
+	long long		last_compile_start;
+	bool			alive;
 	pthread_mutex_t	*dongle_left;
 	pthread_mutex_t	*dongle_right;
+	pthread_mutex_t	*run;
 }					t_thread_data;
 
 typedef struct s_threads
 {
-	int				run;
+	int				number_of_coders;
 	t_thread_data	*td;
 	pthread_t		*threads;
 }					t_threads;
@@ -69,5 +69,6 @@ void				init_all_mutex(int nb_coders, pthread_mutex_t *mtx);
 void				destroy_all_mutex(int nb_coders, pthread_mutex_t *mtx);
 int					free_all(t_config *config, t_threads *threads,
 						pthread_mutex_t *mtx);
+long long			get_time(void);
 
 #endif

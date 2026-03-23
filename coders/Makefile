@@ -9,7 +9,7 @@ INCDIR    := includes
 BUILDDIR  := build
 
 SRCFILES  := main.c parsing.c sleep.c thread_function.c mutex_utils.c \
-			 work_functions.c free_all.c monitor_function.c
+			 work_functions.c free_all.c monitor_function.c get_time.c
 
 OBJS      := $(addprefix $(BUILDDIR)/,$(SRCFILES:.c=.o))
 HEADERS   := $(INCDIR)/codexion.h
