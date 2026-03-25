@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/23 22:42:32 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/25 17:43:44 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,29 @@ void	ending_all_threads(t_threads *threads_obj)
 	}
 }
 
+void	init_prio_q(pthread_t *threads_list, int number_of_coders)
+{
+	t_prio_q	*pq;
+	int			i;
+
+	i = 0;
+	pq = malloc(sizeof(t_prio_q);
+	if (!pq)
+		return (-1);
+	pq->threads_queue = malloc(sizeof(pthread_t) * number_of_coders + 1);
+	while (i < number_of_coders)
+	{
+		enqueue()
+	}
+	pq->threads_queue[i] = NULL;
+}
+
 void	*monitor_work(void *arg)
 {
 	int				i;
 	t_threads		*threads_obj;
 	t_thread_data	td;
+	t_prio_q		pq;
 	pthread_t		*threads_list;
 	long long		time;
 
@@ -43,14 +61,14 @@ void	*monitor_work(void *arg)
 		{
 			td = threads_obj->td[i];
 			time = get_time();
-				if (td.compiled_time == td.config->number_of_compiles_requiered
-					&& time - td.time_start
-					- td.last_compile_start > td.config->time_to_burnout)
-				{
-					printf("%lld %d burned out\n", time - td.time_start, td.id);
-					ending_all_threads(threads_obj);
-					return (NULL);
-				}
+			if (td.compiled_time == td.config->number_of_compiles_requiered
+				&& time - td.time_start
+				- td.last_compile_start > td.config->time_to_burnout)
+			{
+				printf("%lld %d burned out\n", time - td.time_start, td.id);
+				ending_all_threads(threads_obj);
+				return (NULL);
+			}
 			i++;
 		}
 	}

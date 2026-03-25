@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/23 22:22:10 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/25 17:46:42 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ typedef enum e_error
 	NEGATIVE_ERROR,
 	MALLOC_ERROR
 }					t_error;
+
+typedef struct s_prio_q
+{
+	pthread_t		*threads_queue;
+	int				size;
+}					t_prio_q;
 
 typedef struct s_config
 {
@@ -70,5 +76,13 @@ void				destroy_all_mutex(int nb_coders, pthread_mutex_t *mtx);
 int					free_all(t_config *config, t_threads *threads,
 						pthread_mutex_t *mtx);
 long long			get_time(void);
+void				swap(pthread_t *a, pthread_t *b);
+
+// ===SOURCE/UTILS/PRIOQ===
+void				heapifyUp(t_prio *pq, int index);
+void				heapifyDown(t_prio_q *pq, int index);
+int					enqueue(t_prio_q *pq, pthread *thread, int max);
+pthread_t			*dequeue(t_prio_q *pq, pthread_t *thread);
+pthread_t			peek(t_prio_q *pq);
 
 #endif
