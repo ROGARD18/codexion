@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/25 17:43:44 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/25 17:50:08 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	init_prio_q(pthread_t *threads_list, int number_of_coders)
 	pq->threads_queue = malloc(sizeof(pthread_t) * number_of_coders + 1);
 	while (i < number_of_coders)
 	{
-		enqueue()
+		enqueue(&pq, threads_list[i]);
+		i++;
 	}
 	pq->threads_queue[i] = NULL;
 }
