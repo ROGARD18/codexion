@@ -6,17 +6,17 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/25 17:50:08 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/26 18:51:16 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <codexion.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void	ending_all_threads(t_threads *threads_obj)
 {
-	int				i;
-	pthread_mutex_t	*run;
+	int	i;
 
 	i = 0;
 	while (i < threads_obj->number_of_coders)
@@ -26,22 +26,22 @@ void	ending_all_threads(t_threads *threads_obj)
 	}
 }
 
-void	init_prio_q(pthread_t *threads_list, int number_of_coders)
+int	init_prio_q(pthread_t *threads_list, int number_of_coders)
 {
 	t_prio_q	*pq;
 	int			i;
 
 	i = 0;
-	pq = malloc(sizeof(t_prio_q);
+	pq = malloc(sizeof(t_prio_q));
 	if (!pq)
 		return (-1);
-	pq->threads_queue = malloc(sizeof(pthread_t) * number_of_coders + 1);
+	pq->threads_queue = malloc(sizeof(pthread_t) * number_of_coders);
 	while (i < number_of_coders)
 	{
-		enqueue(&pq, threads_list[i]);
+		enqueue(pq, &threads_list[i], number_of_coders);
 		i++;
 	}
-	pq->threads_queue[i] = NULL;
+	return (0);
 }
 
 void	*monitor_work(void *arg)
@@ -49,7 +49,6 @@ void	*monitor_work(void *arg)
 	int				i;
 	t_threads		*threads_obj;
 	t_thread_data	td;
-	t_prio_q		pq;
 	pthread_t		*threads_list;
 	long long		time;
 

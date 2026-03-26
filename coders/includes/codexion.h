@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/25 17:46:42 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/26 18:49:51 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,10 @@ long long			get_time(void);
 void				swap(pthread_t *a, pthread_t *b);
 
 // ===SOURCE/UTILS/PRIOQ===
-void				heapifyUp(t_prio *pq, int index);
+void				heapifyUp(t_prio_q *pq, int index);
 void				heapifyDown(t_prio_q *pq, int index);
-int					enqueue(t_prio_q *pq, pthread *thread, int max);
-pthread_t			*dequeue(t_prio_q *pq, pthread_t *thread);
+int					enqueue(t_prio_q *pq, pthread_t *thread, int max);
+int					dequeue(t_prio_q *pq);
 pthread_t			peek(t_prio_q *pq);
 
 #endif
