@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/23 22:36:20 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/26 19:04:44 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,22 +64,11 @@ void	*thread_work(void *arg)
 	t_thread_data	*td;
 
 	td = (t_thread_data *)arg;
-	while (td->config->number_of_compiles_requiered > 0)
-	{
-		if (!td->alive)
-		{
-			printf("\nKILL THREAD n* %d\n\n", td->id);
-			return NULL;
-		}
-		td->compiled_time += 1;
-		take_dongles(td);
-		// printf("%d compiles restantes ----------------> %d\n", td->id,
-			// td->config->number_of_compiles_requiered);
-		compiling(td->id, td);
-		released_dongles(td);
-		debugging(td->id, td);
-		refactoring(td->id, td);
-		td->config->number_of_compiles_requiered -= 1;
-	}
+	take_dongles(td);
+	compiling(td->id, td);
+	td->compiled_time += 1;
+	released_dongles(td);
+	debugging(td->id, td);
+	refactoring(td->id, td);
 	return (NULL);
 }

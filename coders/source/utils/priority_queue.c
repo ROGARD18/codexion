@@ -6,77 +6,72 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/26 18:50:13 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/26 21:07:13 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <stdio.h>
 
-void	heapifyUp(t_prio_q *pq, int index)
+void	heapify_up(t_prio_q *pq, int index)
 {
-	if (index && pq->threads_queue[(index - 1) / 2] > pq->threads_queue[index])
+	int	parent;
+
+	if (index == 0)
+		return ;
+	parent = (index - 1) / 2;
+	if (pq->td[pq->queue[index]].last_compile_start < 
+        pq->td[pq->queue[parent]].last_compile_start)
 	{
-		swap(&pq->threads_queue[(index - 1) / 2], &pq->threads_queue[index]);
-		heapifyUp(pq, index - 1);
+		swap(&pq->queue[index], &pq->queue[parent]);
+		heapify_up(pq, parent);
 	}
 }
 
-void	heapifyDown(t_prio_q *pq, int index)
+void	heapify_down(t_prio_q *pq, int index)
 {
-	int	smallest;
-	int	left;
-	int	right;
+	int	smallest = index;
+	int	left = 2 * index + 1;
+	int	right = 2 * index + 2;
 
-	smallest = index;
-	left = 2 * index - 1;
-	right = 2 * index + 2;
-	if (left < pq->size
-		&& pq->threads_queue[left] < pq->threads_queue[smallest])
+	if (left < pq->size &&
+        pq->td[pq->queue[left]].last_compile_start < 
+        pq->td[pq->queue[smallest]].last_compile_start)
 		smallest = left;
-	if (right < pq->size
-		&& pq->threads_queue[right] < pq->threads_queue[smallest])
+	if (right < pq->size && 
+        pq->td[pq->queue[right]].last_compile_start < 
+        pq->td[pq->queue[smallest]].last_compile_start)
 		smallest = right;
 	if (smallest != index)
 	{
-		swap(&pq->threads_queue[index], &pq->threads_queue[smallest]);
-		heapifyDown(pq, smallest);
+		swap(&pq->queue[index], &pq->queue[smallest]);
+		heapify_down(pq, smallest);
 	}
 }
 
-int	enqueue(t_prio_q *pq, pthread_t *thread, int max)
+int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders)
 {
-	if (pq->size == max)
-	{
-		printf("Priority queue is full\n");
+	if (pq->size >= number_of_coders)
 		return (-1);
-	}
-	pq->threads_queue[pq->size++] = *thread;
-	heapifyUp(pq, pq->size - 1);
+	pq->queue[pq->size] = coder_index;
+	pq->size++;
+	heapify_up(pq, pq->size);
 	return (0);
 }
 
 int	dequeue(t_prio_q *pq)
 {
-	pthread_t	thread;
-
-	if (!pq->size)
-	{
-		printf("Priority queue is empty.\n");
+	if (pq->size == 0)
 		return (-1);
-	}
-	thread = pq->threads_queue[0];
-	pq->threads_queue[0] = pq->threads_queue[--(pq->size)];
-	heapifyDown(pq, 0);
+	pq->queue[0] = pq->queue[pq->size - 1];
+	pq->size--;
+	heapify_down(pq, 0);
 	return (0);
 }
 
-pthread_t	peek(t_prio_q *pq)
+int	peek(t_prio_q *pq)
 {
-	if (!pq->size)
-	{
-		printf("Priority queue is empty.\n");
-		return ((pthread_t)NULL);
-	}
-	return (pq->threads_queue[0]);
+	if (pq->size == 0)
+		return (-1);
+	return (pq->queue[0]);
 }

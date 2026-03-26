@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/26 18:49:51 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/26 21:06:01 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ typedef enum e_error
 	MALLOC_ERROR
 }					t_error;
 
-typedef struct s_prio_q
-{
-	pthread_t		*threads_queue;
-	int				size;
-}					t_prio_q;
-
 typedef struct s_config
 {
 	int				number_of_coders;
@@ -45,8 +39,8 @@ typedef struct s_config
 typedef struct s_thread_data
 {
 	int				id;
-	long long		time_start;
 	int				compiled_time;
+	long long		time_start;
 	t_config		*config;
 	long long		last_compile_start;
 	bool			alive;
@@ -60,6 +54,14 @@ typedef struct s_threads
 	t_thread_data	*td;
 	pthread_t		*threads;
 }					t_threads;
+
+typedef struct s_prio_q
+{
+	int				*queue;
+	t_thread_data	*td;
+	int				size;
+	int				mode;
+}					t_prio_q;
 
 // ===SOURCE===
 t_config			*parsing(int ac, char **av);
@@ -76,13 +78,13 @@ void				destroy_all_mutex(int nb_coders, pthread_mutex_t *mtx);
 int					free_all(t_config *config, t_threads *threads,
 						pthread_mutex_t *mtx);
 long long			get_time(void);
-void				swap(pthread_t *a, pthread_t *b);
+void				swap(int *a, int *b);
 
 // ===SOURCE/UTILS/PRIOQ===
 void				heapifyUp(t_prio_q *pq, int index);
 void				heapifyDown(t_prio_q *pq, int index);
-int					enqueue(t_prio_q *pq, pthread_t *thread, int max);
+int					enqueue(t_prio_q *pq, int coder_index, int number_of_coders);
 int					dequeue(t_prio_q *pq);
-pthread_t			peek(t_prio_q *pq);
+int					peek(t_prio_q *pq);
 
 #endif

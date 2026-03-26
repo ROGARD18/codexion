@@ -6,15 +6,15 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:17:10 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/25 16:17:53 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/26 19:51:52 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "codexion.h"
 
-void	swap(pthread_t *a, pthread_t *b)
+void	swap(int *a, int *b)
 {
-	pthread_t	temp;
+	int	temp;
 
 	temp = *a;
 	*a = *b;
