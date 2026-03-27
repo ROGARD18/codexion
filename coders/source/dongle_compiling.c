@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/26 19:04:44 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/27 16:46:39 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,19 @@ void	take_dongles(t_thread_data *td)
 	{
 		pthread_mutex_lock(td->dongle_left);
 		time = get_time() - td->time_start;
-		printf("%lld %d has taken a dongle\n",time, td->id);
+		printf("%lld %d has taken a dongle \\\n",time, td->id);
 		pthread_mutex_lock(td->dongle_right);
 		time = get_time() - td->time_start;
-		printf("%lld %d has taken a dongle\n",time, td->id);
+		printf("%lld %d has taken a dongle /\n",time, td->id);
 	}
 	else
 	{
 		pthread_mutex_lock(td->dongle_right);
 		time = get_time() - td->time_start;
-		printf("%lld %d has taken a dongle\n",time, td->id);
+		printf("%lld %d has taken a dongle \\\n",time, td->id);
 		pthread_mutex_lock(td->dongle_left);
 		time = get_time() - td->time_start;
-		printf("%lld %d has taken a dongle\n",time, td->id);
+		printf("%lld %d has taken a dongle /\n",time, td->id);
 	}
 }
 
@@ -57,18 +57,4 @@ void	released_dongles(t_thread_data *td)
 		pthread_mutex_unlock(td->dongle_right);
 		sleep_ms(td->config->dongle_cooldown);
 	}
-}
-
-void	*thread_work(void *arg)
-{
-	t_thread_data	*td;
-
-	td = (t_thread_data *)arg;
-	take_dongles(td);
-	compiling(td->id, td);
-	td->compiled_time += 1;
-	released_dongles(td);
-	debugging(td->id, td);
-	refactoring(td->id, td);
-	return (NULL);
 }

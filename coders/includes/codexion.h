@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/26 21:06:01 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/27 17:02:21 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef struct s_prio_q
 	int				*queue;
 	t_thread_data	*td;
 	int				size;
-	int				mode;
+	char			*mode;
 }					t_prio_q;
 
 // ===SOURCE===
@@ -70,6 +70,9 @@ void				compiling(int id, t_thread_data *td);
 void				debugging(int id, t_thread_data *td);
 void				refactoring(int id, t_thread_data *td);
 void				*monitor_work(void *arg);
+
+void				take_dongles(t_thread_data *td);
+void				released_dongles(t_thread_data *td);
 
 // ===SOURCE/UTILS===
 void				sleep_ms(int milliseconds);
@@ -81,10 +84,11 @@ long long			get_time(void);
 void				swap(int *a, int *b);
 
 // ===SOURCE/UTILS/PRIOQ===
-void				heapifyUp(t_prio_q *pq, int index);
-void				heapifyDown(t_prio_q *pq, int index);
-int					enqueue(t_prio_q *pq, int coder_index, int number_of_coders);
-int					dequeue(t_prio_q *pq);
+void				heapifyUp(t_prio_q *pq, int index, char *mode);
+void				heapifyDown(t_prio_q *pq, int index, char *mode);
+int					enqueue(t_prio_q *pq, int coder_index, int number_of_coders,
+						char *mode);
+int					dequeue(t_prio_q *pq, char *mode);
 int					peek(t_prio_q *pq);
 
 #endif

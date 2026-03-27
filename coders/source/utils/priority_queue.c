@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/26 21:07:13 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/27 16:13:21 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,11 @@ void	heapify_down(t_prio_q *pq, int index)
 int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders)
 {
 	if (pq->size >= number_of_coders)
+	{
+		printf("NOT ENQUE !");
 		return (-1);
+	}
+	printf("pq->size = %d ", pq->size);
 	pq->queue[pq->size] = coder_index;
 	pq->size++;
 	heapify_up(pq, pq->size);
