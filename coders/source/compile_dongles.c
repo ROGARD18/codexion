@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   thread_function.c                                  :+:      :+:    :+:   */
+/*   compile_dongles.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/27 16:46:39 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 14:38:24 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,3 +58,34 @@ void	released_dongles(t_thread_data *td)
 		sleep_ms(td->config->dongle_cooldown);
 	}
 }
+
+// void	take_dongles(t_thread_data *td, t_prio_q *pq, t_threads *obj)
+// {
+//     pthread_mutex_lock(&obj->q_mtx);
+
+//     enqueue(pq, td->id - 1, obj->number_of_coders); 
+//     while (peek(pq) != (td->id - 1) && td->alive)
+//     {
+//         pthread_cond_wait(&obj->conds[td->id - 1], &obj->q_mtx);
+//     }
+    
+//     pthread_mutex_lock(td->dongle_left);
+//     pthread_mutex_lock(td->dongle_right);
+    
+//     pthread_mutex_unlock(&obj->q_mtx);
+// }
+
+// void	released_dongles(t_thread_data *td, t_prio_q *pq, t_threads *obj)
+// {
+//     pthread_mutex_lock(&obj->q_mtx);
+    
+//     pthread_mutex_unlock(td->dongle_left);
+//     pthread_mutex_unlock(td->dongle_right);
+    
+//     dequeue(pq);
+    
+//     for (int i = 0; i < obj->number_of_coders; i++)
+//         pthread_cond_broadcast(&obj->conds[i]);
+        
+//     pthread_mutex_unlock(&obj->q_mtx);
+// }

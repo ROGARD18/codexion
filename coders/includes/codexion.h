@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/27 17:02:21 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/28 12:41:10 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ typedef struct s_thread_data
 typedef struct s_threads
 {
 	int				number_of_coders;
+	pthread_mutex_t print_mtx;
+	pthread_mutex_t queue_mtx;
+	pthread_cond_t *cond;
+	t_thread_data	*td;
+	t_thread_data	*td;
 	t_thread_data	*td;
 	pthread_t		*threads;
 }					t_threads;

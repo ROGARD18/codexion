@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor_function.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/27 18:21:32 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 14:38:05 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void	init_all_cond(void)
-{
-	pthread_cond_t	
-}
+// void	init_all_cond(void)
+// {
+// 	pthread_cond_t	
+// }
 
 void	ending_all_threads(t_threads *threads_obj)
 {
@@ -56,40 +56,25 @@ t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td, char *mode)
 
 void	*monitor_work(void *arg)
 {
-	int				i;
-	char *mode;
-	t_threads		*threads_obj;
-	t_thread_data	td;
-	pthread_t		*threads_list;
-	long long		time;
-	t_prio_q		*pq;
-	int				index_peek;
+    t_threads	*obj = (t_threads *)arg;
+    long long	now;
+    int			i;
 
-	threads_obj = (t_threads *)arg;
-	mode = threads_obj->td[0].config->sheduler;
-	threads_list = threads_obj->threads;
-	pq = init_prio_q(threads_obj->number_of_coders, threads_obj->td, mode);
-	while (1)
-	{
-		i = 0;
-		while (i < threads_obj->number_of_coders - 1)
-		{
-			index_peek = peek(pq);
-			printf("PEEK: %d\n", index_peek);
-			td = threads_obj->td[index_peek];
-			time = get_time();
-			if (td.compiled_time == td.config->number_of_compiles_requiered
-				&& time - td.time_start
-				- td.last_compile_start > td.config->time_to_burnout)
-			{
-				printf("%lld %d burned out\n", time - td.time_start, td.id);
-				ending_all_threads(threads_obj);
-				return (NULL);
-			}
-			
-			i++;
-		}
-	}
-	printf("FINI\n");
-	return (NULL);
+    while (1)
+    {
+        for (i = 0; i < obj->number_of_coders; i++)
+        {
+            now = get_time();
+            if (now - obj->td[i].last_compile_start > obj->td[i].config->time_to_burnout)
+            {
+                pthread_mutex_lock(&obj->print_mtx);
+                printf("%lld %d burned out\n", now - obj->td[i].time_start, obj->td[i].id);
+                ending_all_threads(obj);
+                pthread_mutex_unlock(&obj->print_mtx);
+                return (NULL);
+            }
+        }
+        usleep(500);
+    }
+    return (NULL);
 }

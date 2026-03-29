@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/27 15:48:04 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 14:37:47 by rogard-anto      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	create_threads(t_threads *threads_obj, t_config *config, pthread_mutex_t *mt
 		threads_obj->td[i].id = i + 1;
 		threads_obj->td[i].config = config;
 		threads_obj->td[i].compiled_time = 0;
-		threads_obj->td[i].last_compile_start = 0;
+		threads_obj->td[i].last_compile_start = time;
 		threads_obj->td[i].time_start = time;
 		threads_obj->td[i].alive = true;
 		if (config->number_of_coders == 1)
@@ -84,3 +84,8 @@ int	main(int ac, char **av)
 	free_all(config, threads, mtx);
 	return (0);
 }
+// obj->conds = malloc(sizeof(pthread_cond_t) * config->number_of_coders);
+// pthread_mutex_init(&obj->q_mtx, NULL);
+// pthread_mutex_init(&obj->log_mtx, NULL);
+// for (i = 0; i < config->number_of_coders; i++)
+//     pthread_cond_init(&obj->conds[i], NULL);
