@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sleep_ms.c                                         :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/16 15:54:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 22:02:37 by anrogard         ###   ########.fr       */
+/*   Created: 2026/03/29 21:45:07 by anrogard          #+#    #+#             */
+/*   Updated: 2026/03/29 22:06:44 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <codexion.h>
-#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
-void	sleep_ms(int milliseconds, t_thread_data *td)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	long long	start;
+	size_t	r;
+	void	*s;
 
-	start = get_time();
-	while ((get_time() - start) < milliseconds)
+	r = nmemb * size;
+	if (nmemb != 0 && r / nmemb != size)
+		return (NULL);
+	if (r == 0)
 	{
-		if (!td->alive)
-			break ;
-		usleep(1);
+		s = malloc(1);
+		if (!s)
+			return (NULL);
+		return (s);
 	}
+	s = malloc(r);
+	if (!s)
+		return (NULL);
+	memset(s, 0, r);
+	return (s);
 }

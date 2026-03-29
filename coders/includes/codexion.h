@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 19:54:29 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 22:57:49 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_thread_data
 	int							compiled_time;
 	long long					time_start;
 	t_config					*config;
-	long long					last_compile_start;
+	long long					last_cmp_start;
 	bool						alive;
 	pthread_mutex_t				*dongle_left;
 	pthread_mutex_t				*dongle_right;
@@ -68,8 +68,10 @@ typedef struct s_threads
 	pthread_mutex_t				*print_mtx;
 	pthread_mutex_t				*queue_mtx;
 	pthread_cond_t				*conds;
+	t_prio_q					*pq;
 	t_thread_data				*td;
 	pthread_t					*threads_list;
+	long long					time;
 }								t_threads;
 
 // ===SOURCE===
@@ -93,7 +95,14 @@ int								free_all(t_config *config, t_threads *threads,
 									pthread_mutex_t *mtx);
 long long						get_time(void);
 void							swap(int *a, int *b);
-
+t_prio_q						*init_prio_q(int number_of_coders,
+									t_thread_data *td, char *sheduler);
+t_threads						*init_threads_obj(t_config *config,
+									long long time);
+void							*ft_calloc(size_t nmemb, size_t size);
+t_thread_data					init_td(t_config *config,
+									t_threads *threads_obj, long long time,
+									int i);
 // ===SOURCE/UTILS/PRIOQ===
 void							heapifyUp(t_prio_q *pq, int index,
 									char *sheduler);

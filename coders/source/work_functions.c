@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/03/29 21:06:13 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 22:43:02 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	compiling(int id, t_thread_data *td)
 	long long	time;
 
 	time = get_time();
-	td->last_compile_start = time;
+	td->last_cmp_start = time;
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is compiling\n", time - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
@@ -41,6 +41,28 @@ void	refactoring(int id, t_thread_data *td)
 	pthread_mutex_unlock(td->print_mtx);
 	sleep_ms(td->config->time_to_refactor, td);
 }
+
+int	do_work(t_thread_data *td)
+{
+	if (td->alive == 0)
+		return (-1);
+	take_dongles(td);
+	if (td->alive == 0)
+		return (-1);
+	compiling(td->id, td);
+	if (td->alive == 0)
+		return (-1);
+	td->compiled_time += 1;
+	released_dongles(td);
+	if (!td->alive)
+		return (-1);
+	debugging(td->id, td);
+	if (!td->alive)
+		return (-1);
+	refactoring(td->id, td);
+	return (0);
+}
+
 void	*thread_work(void *arg)
 {
 	t_thread_data	*td;
@@ -55,24 +77,9 @@ void	*thread_work(void *arg)
 	}
 	while (i++ < td->config->number_of_compiles_requiered - 1)
 	{
-		if (td->alive == 0)
+		if (do_work(td) == -1)
 			return (NULL);
-		take_dongles(td);
-		if (td->alive == 0)
-			return (NULL);
-		compiling(td->id, td);
-		if (td->alive == 0)
-			return (NULL);
-		td->compiled_time += 1;
-		released_dongles(td);
-		if (!td->alive)
-			return (NULL);
-		debugging(td->id, td);
-		if (!td->alive)
-			return (NULL);
-		refactoring(td->id, td);
 	}
 	td->alive = 0;
-	printf("FINI\n");
 	return (NULL);
 }

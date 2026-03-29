@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 19:02:45 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 22:34:41 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 
 void	heapify_up(t_prio_q *pq, int index, char *sheduler)
 {
-	int	parent;
+	long long	parent_time;
+	int			parent;
 
 	if (index == 0)
 		return ;
 	parent = (index - 1) / 2;
-	if (pq->td[pq->queue[index]].last_compile_start < 
-        pq->td[pq->queue[parent]].last_compile_start)
+	parent_time = pq->td[pq->queue[parent]].last_cmp_start;
+	if (pq->td[pq->queue[index]].last_cmp_start < parent_time)
 	{
 		swap(&pq->queue[index], &pq->queue[parent]);
 		heapify_up(pq, parent, sheduler);
@@ -30,18 +31,26 @@ void	heapify_up(t_prio_q *pq, int index, char *sheduler)
 
 void	heapify_down(t_prio_q *pq, int index, char *sheduler)
 {
-	int	smallest = index;
-	int	left = 2 * index + 1;
-	int	right = 2 * index + 2;
+	int			smallest;
+	int			left;
+	int			right;
+	long long	temp_time;
 
-	if (left < pq->size &&
-        pq->td[pq->queue[left]].last_compile_start < 
-        pq->td[pq->queue[smallest]].last_compile_start)
-		smallest = left;
-	if (right < pq->size && 
-        pq->td[pq->queue[right]].last_compile_start < 
-        pq->td[pq->queue[smallest]].last_compile_start)
-		smallest = right;
+	smallest = index;
+	left = 2 * index + 1;
+	right = 2 * index + 2;
+	if (left < pq->size)
+	{
+		temp_time = pq->td[pq->queue[left]].last_cmp_start;
+		if (temp_time < pq->td[pq->queue[smallest]].last_cmp_start)
+			smallest = left;
+	}
+	if (right < pq->size)
+	{
+		temp_time = pq->td[pq->queue[right]].last_cmp_start;
+		if (temp_time < pq->td[pq->queue[smallest]].last_cmp_start)
+			smallest = right;
+	}
 	if (smallest != index)
 	{
 		swap(&pq->queue[index], &pq->queue[smallest]);
@@ -54,7 +63,6 @@ int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders, char *sheduler)
 	if (pq->size >= number_of_coders)
 	{
 		printf("NOT ENQUE !\n");
-		// printf("last_element = %d\n", pq->queue[pq->size - 1]);
 		return (-1);
 	}
 	pq->queue[pq->size] = coder_index;

@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 20:57:46 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 22:27:26 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-// void	init_all_cond(void)
-// {
-// 	pthread_cond_t
-// }
 
 void	ending_all_threads(t_threads *threads_obj)
 {
@@ -38,18 +33,16 @@ void	*monitor_work(void *arg)
 	t_threads	*obj;
 	long long	time;
 	int			i;
-	int			j;
 
 	obj = (t_threads *)arg;
-	j = 0;
 	while (1)
 	{
 		i = 0;
 		while (i++ < obj->number_of_coders - 1)
 		{
 			time = get_time();
-			if (time
-				- obj->td[i].last_compile_start > obj->td[i].config->time_to_burnout)
+			arg = (void *)obj->td[i].config->time_to_burnout;
+			if (time - obj->td[i].last_cmp_start > (long long)arg)
 			{
 				pthread_mutex_lock(obj->print_mtx);
 				obj->td[i].alive = false;
@@ -60,10 +53,6 @@ void	*monitor_work(void *arg)
 				return (NULL);
 			}
 		}
-        if (obj->td[i].alive == 0)
-            return (NULL);
-		j++;
-        printf("j = %d\n", j);
 	}
 	return (NULL);
 }
