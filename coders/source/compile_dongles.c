@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 19:48:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 21:04:29 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,7 @@ void	take_dongles(t_thread_data *td)
 	pthread_mutex_unlock(td->queue_mtx);
 	if (!td->alive)
 		return ;
-	if (td->config->number_of_coders == 1)
-	{
-		pthread_mutex_lock(td->dongle_left);
-		printf("%lld %d has taken a dongle\n", get_time() - td->time_start, td->id);
-		pthread_mutex_unlock(td->dongle_left);
-	}
-	else if (td->id == td->config->number_of_coders)
+	if (td->id == td->config->number_of_coders)
 	{
 		pthread_mutex_lock(td->dongle_left);
 		pthread_mutex_lock(td->print_mtx);

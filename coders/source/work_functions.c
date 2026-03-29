@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/03/29 20:46:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 21:06:13 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ void	*thread_work(void *arg)
 
 	i = -1;
 	td = (t_thread_data *)arg;
+	if (!td->dongle_left)
+	{
+		printf("There is only one dongle on the table.");
+		return (NULL);
+	}
 	while (i++ < td->config->number_of_compiles_requiered - 1)
 	{
 		if (td->alive == 0)
@@ -66,9 +71,8 @@ void	*thread_work(void *arg)
 		if (!td->alive)
 			return (NULL);
 		refactoring(td->id, td);
-		// if (!td->alive)
-		// 	return (NULL);
 	}
 	td->alive = 0;
+	printf("FINI\n");
 	return (NULL);
 }

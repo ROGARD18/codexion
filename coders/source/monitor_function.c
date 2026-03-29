@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 20:46:09 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 20:57:46 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	*monitor_work(void *arg)
         if (obj->td[i].alive == 0)
             return (NULL);
 		j++;
+        printf("j = %d\n", j);
 	}
 	return (NULL);
 }

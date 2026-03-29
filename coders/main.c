@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 20:16:38 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 21:01:04 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,14 @@ int	create_threads(t_threads *threads_obj, t_config *config,
 			threads_obj->td[i].dongle_left = NULL;
 			threads_obj->td[i].dongle_right = &mtx[i];
 		}
-		if (i == 0)
-			threads_obj->td[i].dongle_left = &mtx[config->number_of_coders - 1];
 		else
-			threads_obj->td[i].dongle_left = &mtx[i - 1];
-		threads_obj->td[i].dongle_right = &mtx[i % config->number_of_coders];
+		{
+			if (i == 0)
+				threads_obj->td[i].dongle_left = &mtx[config->number_of_coders - 1];
+			else
+				threads_obj->td[i].dongle_left = &mtx[i - 1];
+			threads_obj->td[i].dongle_right = &mtx[i];
+		}
 		pthread_create(&threads_obj->threads_list[i], NULL, thread_work,
 			&threads_obj->td[i]);
 		i++;
