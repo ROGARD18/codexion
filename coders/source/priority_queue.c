@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 16:26:20 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 19:02:45 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,9 @@ int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders, char *sheduler)
 	if (pq->size >= number_of_coders)
 	{
 		printf("NOT ENQUE !\n");
-		printf("size = %d\n", pq->size);
+		// printf("last_element = %d\n", pq->queue[pq->size - 1]);
 		return (-1);
 	}
-	printf("pq->size = %d ", pq->size);
 	pq->queue[pq->size] = coder_index;
 	heapify_up(pq, pq->size, sheduler);
 	pq->size++;

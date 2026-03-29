@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 17:19:26 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 19:27:22 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,6 @@ t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td, char *sheduler)
 	pq->td = td;
 	pq->size = 0;
 	pq->sheduler = sheduler;
-	while (i < number_of_coders)
-	{
-		if (enqueue(pq, i, number_of_coders, sheduler) == -1)
-			return ((t_prio_q *)NULL);
-		i++;
-	}
 	return (pq);
 }
 
@@ -120,7 +114,6 @@ int	main(int ac, char **av)
 		return (free_all(config, threads_obj, mtx));
 	if (create_threads(threads_obj, config, mtx, time))
 		return (free_all(config, threads_obj, mtx));
-	printf("numbers_of_coders = %d\n", config->number_of_coders);
 	free_all(config, threads_obj, mtx);
 	return (0);
 }

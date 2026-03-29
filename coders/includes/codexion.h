@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 17:24:15 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 19:25:27 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void				take_dongles(t_thread_data *td);
 void				released_dongles(t_thread_data *td);
 
 // ===SOURCE/UTILS===
-void				sleep_ms(int milliseconds);
+void				sleep_ms(int milliseconds, t_thread_data *td);
 void				init_all_mutex(int nb_coders, pthread_mutex_t *mtx);
 void				destroy_all_mutex(int nb_coders, pthread_mutex_t *mtx);
 int					free_all(t_config *config, t_threads *threads,
