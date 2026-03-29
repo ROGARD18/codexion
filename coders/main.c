@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 19:27:22 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/29 20:16:38 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int	create_threads(t_threads *threads_obj, t_config *config,
 		pthread_join(threads_obj->threads_list[i], NULL);
 		i++;
 	}
+	pthread_join(monitor, NULL);
 	destroy_all_mutex(config->number_of_coders, mtx);
 	pthread_mutex_destroy(&run);
 	return (0);
@@ -101,8 +102,12 @@ int	main(int ac, char **av)
 	threads_obj = malloc(sizeof(t_threads));
 	if (!config || !threads_obj)
 		return (free_all(config, threads_obj, NULL));
-	pthread_mutex_init(&threads_obj->queue_mtx, NULL);
-	pthread_mutex_init(&threads_obj->print_mtx, NULL);
+	threads_obj->queue_mtx = malloc (sizeof(pthread_mutex_t));
+	threads_obj->print_mtx = malloc (sizeof(pthread_mutex_t));
+	if (!threads_obj->queue_mtx || !threads_obj->print_mtx)
+		return (free_all(config, threads_obj, NULL));
+	pthread_mutex_init(threads_obj->queue_mtx, NULL);
+	pthread_mutex_init(threads_obj->print_mtx, NULL);
 	threads_obj->conds = malloc(sizeof(pthread_cond_t) * config->number_of_coders);
 	if (!threads_obj->conds)
 		return (free_all(config, threads_obj, NULL));
