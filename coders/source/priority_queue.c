@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   priority_queue.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
+/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/28 12:37:08 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/29 16:26:20 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <stdio.h>
 
-void	heapify_up(t_prio_q *pq, int index, char *mode)
+void	heapify_up(t_prio_q *pq, int index, char *sheduler)
 {
 	int	parent;
 
@@ -24,11 +24,11 @@ void	heapify_up(t_prio_q *pq, int index, char *mode)
         pq->td[pq->queue[parent]].last_compile_start)
 	{
 		swap(&pq->queue[index], &pq->queue[parent]);
-		heapify_up(pq, parent, mode);
+		heapify_up(pq, parent, sheduler);
 	}
 }
 
-void	heapify_down(t_prio_q *pq, int index, char *mode)
+void	heapify_down(t_prio_q *pq, int index, char *sheduler)
 {
 	int	smallest = index;
 	int	left = 2 * index + 1;
@@ -45,31 +45,32 @@ void	heapify_down(t_prio_q *pq, int index, char *mode)
 	if (smallest != index)
 	{
 		swap(&pq->queue[index], &pq->queue[smallest]);
-		heapify_down(pq, smallest, mode);
+		heapify_down(pq, smallest, sheduler);
 	}
 }
 
-int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders, char *mode)
+int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders, char *sheduler)
 {
 	if (pq->size >= number_of_coders)
 	{
-		printf("NOT ENQUE !");
+		printf("NOT ENQUE !\n");
+		printf("size = %d\n", pq->size);
 		return (-1);
 	}
 	printf("pq->size = %d ", pq->size);
 	pq->queue[pq->size] = coder_index;
-	heapify_up(pq, pq->size, mode);
+	heapify_up(pq, pq->size, sheduler);
 	pq->size++;
 	return (0);
 }
 
-int	dequeue(t_prio_q *pq, char *mode)
+int	dequeue(t_prio_q *pq, char *sheduler)
 {
 	if (pq->size == 0)
 		return (-1);
 	pq->queue[0] = pq->queue[pq->size - 1];
 	pq->size--;
-	heapify_down(pq, 0, mode);
+	heapify_down(pq, 0, sheduler);
 	return (0);
 }
 

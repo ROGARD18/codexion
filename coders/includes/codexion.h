@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
+/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/28 12:41:10 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/03/29 17:24:15 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,16 @@ typedef struct s_config
 	char			*sheduler;
 }					t_config;
 
+typedef struct s_thread_data t_thread_data;
+
+typedef struct s_prio_q
+{
+	int				*queue;
+	t_thread_data	*td;
+	int				size;
+	char			*sheduler;
+}					t_prio_q;
+
 typedef struct s_thread_data
 {
 	int				id;
@@ -46,27 +56,22 @@ typedef struct s_thread_data
 	bool			alive;
 	pthread_mutex_t	*dongle_left;
 	pthread_mutex_t	*dongle_right;
+	pthread_mutex_t	print_mtx;
+	pthread_mutex_t	queue_mtx;
+	pthread_mutex_t	alive_mtx;
+	pthread_cond_t	*conds;
+	t_prio_q		*pq;
 }					t_thread_data;
 
 typedef struct s_threads
 {
 	int				number_of_coders;
-	pthread_mutex_t print_mtx;
-	pthread_mutex_t queue_mtx;
-	pthread_cond_t *cond;
+	pthread_mutex_t	print_mtx;
+	pthread_mutex_t	queue_mtx;
+	pthread_cond_t	*conds;
 	t_thread_data	*td;
-	t_thread_data	*td;
-	t_thread_data	*td;
-	pthread_t		*threads;
+	pthread_t		*threads_list;
 }					t_threads;
-
-typedef struct s_prio_q
-{
-	int				*queue;
-	t_thread_data	*td;
-	int				size;
-	char			*mode;
-}					t_prio_q;
 
 // ===SOURCE===
 t_config			*parsing(int ac, char **av);
@@ -89,11 +94,11 @@ long long			get_time(void);
 void				swap(int *a, int *b);
 
 // ===SOURCE/UTILS/PRIOQ===
-void				heapifyUp(t_prio_q *pq, int index, char *mode);
-void				heapifyDown(t_prio_q *pq, int index, char *mode);
+void				heapifyUp(t_prio_q *pq, int index, char *sheduler);
+void				heapifyDown(t_prio_q *pq, int index, char *sheduler);
 int					enqueue(t_prio_q *pq, int coder_index, int number_of_coders,
-						char *mode);
-int					dequeue(t_prio_q *pq, char *mode);
+						char *sheduler);
+int					dequeue(t_prio_q *pq, char *sheduler);
 int					peek(t_prio_q *pq);
 
 #endif
