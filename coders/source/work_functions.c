@@ -6,13 +6,14 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/03/29 22:43:02 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/30 23:52:14 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void	compiling(int id, t_thread_data *td)
 {
@@ -39,7 +40,7 @@ void	refactoring(int id, t_thread_data *td)
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is refactoring\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
-	sleep_ms(td->config->time_to_refactor, td);
+	usleep(td->config->time_to_refactor);
 }
 
 int	do_work(t_thread_data *td)
@@ -54,10 +55,10 @@ int	do_work(t_thread_data *td)
 		return (-1);
 	td->compiled_time += 1;
 	released_dongles(td);
-	if (!td->alive)
+	if (td->alive == 0)
 		return (-1);
 	debugging(td->id, td);
-	if (!td->alive)
+	if (td->alive == 0)
 		return (-1);
 	refactoring(td->id, td);
 	return (0);
@@ -73,12 +74,16 @@ void	*thread_work(void *arg)
 	if (!td->dongle_left)
 	{
 		printf("There is only one dongle on the table.");
+		td->alive = 0;
 		return (NULL);
 	}
 	while (i++ < td->config->number_of_compiles_requiered - 1)
 	{
 		if (do_work(td) == -1)
+		{
+			// printf("i = %d\n", i);
 			return (NULL);
+		}
 	}
 	td->alive = 0;
 	return (NULL);

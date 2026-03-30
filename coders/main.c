@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 23:00:01 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/30 18:33:29 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ void	create_helper(t_threads *threads_obj, pthread_mutex_t *mtx, int i,
 int	create_threads(t_threads *threads_obj, t_config *config,
 		pthread_mutex_t *mtx)
 {
-	int				i;
-	pthread_t		monitor;
+	int			i;
+	pthread_t	monitor;
 
 	threads_obj->number_of_coders = config->number_of_coders;
 	threads_obj->threads_list = malloc(sizeof(pthread_t)

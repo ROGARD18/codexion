@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 22:39:42 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/30 18:24:46 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	take_dongles(t_thread_data *td)
 void	released_dongles(t_thread_data *td)
 {
 	int	i;
-
 	pthread_mutex_unlock(td->dongle_left);
 	pthread_mutex_unlock(td->dongle_right);
 	pthread_mutex_lock(td->queue_mtx);

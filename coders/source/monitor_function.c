@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 22:27:26 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/30 18:46:35 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,23 @@ void	ending_all_threads(t_threads *threads_obj)
 		i++;
 	}
 }
+bool	all_finish(t_threads *obj)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (i < obj->number_of_coders)
+	{
+		if (obj->td[i].alive == 0)
+			count++;
+		i++;
+	}
+	if (count == obj->number_of_coders)
+		return (true);
+	return (false);
+}
 
 void	*monitor_work(void *arg)
 {
@@ -37,19 +54,23 @@ void	*monitor_work(void *arg)
 	obj = (t_threads *)arg;
 	while (1)
 	{
+		if (obj->number_of_coders == 1 && obj->td[0].alive == false)
+			return (NULL);
 		i = 0;
 		while (i++ < obj->number_of_coders - 1)
 		{
 			time = get_time();
 			arg = (void *)obj->td[i].config->time_to_burnout;
+			if (all_finish(obj))
+				return (NULL);
 			if (time - obj->td[i].last_cmp_start > (long long)arg)
 			{
-				pthread_mutex_lock(obj->print_mtx);
 				obj->td[i].alive = false;
+				pthread_mutex_lock(obj->print_mtx);
 				printf("%lld %d burned out\n", time - obj->td[i].time_start,
 					obj->td[i].id);
-				ending_all_threads(obj);
 				pthread_mutex_unlock(obj->print_mtx);
+				ending_all_threads(obj);
 				return (NULL);
 			}
 		}
