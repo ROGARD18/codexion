@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/30 18:46:35 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/31 16:39:22 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	ending_all_threads(t_threads *threads_obj)
 {
 	int	i;
 
+	printf("ENDING\n");
 	i = 0;
 	while (i < threads_obj->number_of_coders)
 	{
@@ -26,6 +27,9 @@ void	ending_all_threads(t_threads *threads_obj)
 		pthread_cond_broadcast(&threads_obj->td->conds[i]);
 		i++;
 	}
+	i = 0;
+	while (i < threads_obj->number_of_coders)
+		pthread_mutex_unlock(&threads_obj->dongles_mtx[i++]);
 }
 bool	all_finish(t_threads *obj)
 {
@@ -34,11 +38,11 @@ bool	all_finish(t_threads *obj)
 
 	i = 0;
 	count = 0;
+
 	while (i < obj->number_of_coders)
 	{
-		if (obj->td[i].alive == 0)
+		if (obj->td[i++].alive == 0)
 			count++;
-		i++;
 	}
 	if (count == obj->number_of_coders)
 		return (true);

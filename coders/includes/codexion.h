@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 22:57:49 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/31 16:33:58 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_thread_data
 typedef struct s_threads
 {
 	int							number_of_coders;
+	pthread_mutex_t				*dongles_mtx;
 	pthread_mutex_t				*print_mtx;
 	pthread_mutex_t				*queue_mtx;
 	pthread_cond_t				*conds;
@@ -82,7 +83,7 @@ void							debugging(int id, t_thread_data *td);
 void							refactoring(int id, t_thread_data *td);
 void							*monitor_work(void *arg);
 
-void							take_dongles(t_thread_data *td);
+int								take_dongles(t_thread_data *td);
 void							released_dongles(t_thread_data *td);
 
 // ===SOURCE/UTILS===
@@ -98,7 +99,8 @@ void							swap(int *a, int *b);
 t_prio_q						*init_prio_q(int number_of_coders,
 									t_thread_data *td, char *sheduler);
 t_threads						*init_threads_obj(t_config *config,
-									long long time);
+									long long time,
+									pthread_mutex_t *dongle_mtx);
 void							*ft_calloc(size_t nmemb, size_t size);
 t_thread_data					init_td(t_config *config,
 									t_threads *threads_obj, long long time,

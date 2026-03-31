@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/29 21:14:26 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/30 16:30:29 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/03/31 16:21:06 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td,
 	i = 0;
 	pq = malloc(sizeof(t_prio_q));
 	if (!pq)
-		return ((t_prio_q *) NULL);
+		return ((t_prio_q *)NULL);
 	pq->queue = malloc(sizeof(int) * number_of_coders);
 	pq->td = td;
 	pq->size = 0;
@@ -48,7 +48,8 @@ t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td,
 	return (pq);
 }
 
-t_threads	*init_threads_obj(t_config *config, long long time)
+t_threads	*init_threads_obj(t_config *config, long long time,
+		pthread_mutex_t *dongles_mtx)
 {
 	t_threads	*threads_obj;
 
@@ -70,5 +71,6 @@ t_threads	*init_threads_obj(t_config *config, long long time)
 	if (!threads_obj->conds)
 		return (NULL);
 	threads_obj->time = time;
+	threads_obj->dongles_mtx = dongles_mtx;
 	return (threads_obj);
 }
