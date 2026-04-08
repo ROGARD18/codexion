@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/29 21:14:26 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/31 16:21:06 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/08 16:52:41 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td,
 	pq->td = td;
 	pq->size = 0;
 	pq->sheduler = sheduler;
+	pq->enqueue_order = malloc(sizeof(int) * number_of_coders);
+	if (!pq->enqueue_order)
+		return (NULL);
+	pq->seq_counter = 0;
 	return (pq);
 }
 

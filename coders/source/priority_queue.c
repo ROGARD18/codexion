@@ -6,23 +6,39 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 22:34:41 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/08 16:53:48 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <stdio.h>
+#include <string.h>
+
+/*
+** Returns the priority value for a given coder index.
+** FIFO : order of arrival in the queue (smaller seq = higher priority).
+** EDF  : last_cmp_start (= deadline - time_to_burnout, constant offset so
+**        ordering is identical to comparing deadlines directly).
+*/
+static long long	get_priority(t_prio_q *pq, int coder_index, char *sheduler)
+{
+	if (strcmp(sheduler, "fifo") == 0)
+		return ((long long)pq->enqueue_order[coder_index]);
+	return (pq->td[coder_index].last_cmp_start);
+}
 
 void	heapify_up(t_prio_q *pq, int index, char *sheduler)
 {
-	long long	parent_time;
+	long long	child_prio;
+	long long	parent_prio;
 	int			parent;
 
 	if (index == 0)
 		return ;
 	parent = (index - 1) / 2;
-	parent_time = pq->td[pq->queue[parent]].last_cmp_start;
-	if (pq->td[pq->queue[index]].last_cmp_start < parent_time)
+	child_prio = get_priority(pq, pq->queue[index], sheduler);
+	parent_prio = get_priority(pq, pq->queue[parent], sheduler);
+	if (child_prio < parent_prio)
 	{
 		swap(&pq->queue[index], &pq->queue[parent]);
 		heapify_up(pq, parent, sheduler);
@@ -31,24 +47,23 @@ void	heapify_up(t_prio_q *pq, int index, char *sheduler)
 
 void	heapify_down(t_prio_q *pq, int index, char *sheduler)
 {
-	int			smallest;
-	int			left;
-	int			right;
-	long long	temp_time;
+	int	smallest;
+	int	left;
+	int	right;
 
 	smallest = index;
 	left = 2 * index + 1;
 	right = 2 * index + 2;
 	if (left < pq->size)
 	{
-		temp_time = pq->td[pq->queue[left]].last_cmp_start;
-		if (temp_time < pq->td[pq->queue[smallest]].last_cmp_start)
+		if (get_priority(pq, pq->queue[left], sheduler) < get_priority(pq,
+				pq->queue[smallest], sheduler))
 			smallest = left;
 	}
 	if (right < pq->size)
 	{
-		temp_time = pq->td[pq->queue[right]].last_cmp_start;
-		if (temp_time < pq->td[pq->queue[smallest]].last_cmp_start)
+		if (get_priority(pq, pq->queue[right], sheduler) < get_priority(pq,
+				pq->queue[smallest], sheduler))
 			smallest = right;
 	}
 	if (smallest != index)
@@ -65,6 +80,7 @@ int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders, char *sheduler)
 		printf("NOT ENQUE !\n");
 		return (-1);
 	}
+	pq->enqueue_order[coder_index] = pq->seq_counter++;
 	pq->queue[pq->size] = coder_index;
 	heapify_up(pq, pq->size, sheduler);
 	pq->size++;

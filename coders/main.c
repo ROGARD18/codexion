@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/31 16:25:34 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/08 16:47:23 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void	create_helper(t_threads *threads_obj, pthread_mutex_t *dongles_mtx, int i,
+void	create__all_td(t_threads *threads_obj, pthread_mutex_t *dongles_mtx,
 		t_config *config)
 {
-	threads_obj->td[i] = init_td(config, threads_obj, threads_obj->time, i);
-	if (config->number_of_coders == 1)
+	int i = 0;
+	while (i < threads_obj->number_of_coders)
 	{
-		threads_obj->td[i].dongle_left = NULL;
-		threads_obj->td[i].dongle_right = &dongles_mtx[i];
-	}
-	else
-	{
-		if (i == 0)
-			threads_obj->td[i].dongle_left = &dongles_mtx[config->number_of_coders - 1];
+		threads_obj->td[i] = init_td(config, threads_obj, threads_obj->time, i);
+		if (config->number_of_coders == 1)
+		{
+			threads_obj->td[i].dongle_left = NULL;
+			threads_obj->td[i].dongle_right = &dongles_mtx[i];
+		}
 		else
-			threads_obj->td[i].dongle_left = &dongles_mtx[i - 1];
-		threads_obj->td[i].dongle_right = &dongles_mtx[i];
+		{
+			if (i == 0)
+				threads_obj->td[i].dongle_left = &dongles_mtx[config->number_of_coders - 1];
+			else
+				threads_obj->td[i].dongle_left = &dongles_mtx[i - 1];
+			threads_obj->td[i].dongle_right = &dongles_mtx[i];
+		}
+		i++;
 	}
-	pthread_create(&threads_obj->threads_list[i], NULL, thread_work,
-		&threads_obj->td[i]);
-	i++;
 }
 
 int	create_threads(t_threads *threads_obj, t_config *config,
@@ -48,9 +50,11 @@ int	create_threads(t_threads *threads_obj, t_config *config,
 	if (!threads_obj->threads_list)
 		return (-1);
 	i = 0;
+	create__all_td(threads_obj, dongles_mtx, config);
 	while (i < config->number_of_coders)
 	{
-		create_helper(threads_obj, dongles_mtx, i, config);
+		pthread_create(&threads_obj->threads_list[i], NULL, thread_work,
+			&threads_obj->td[i]);
 		i++;
 	}
 	pthread_create(&monitor, NULL, monitor_work, threads_obj);
@@ -76,7 +80,6 @@ int	main(int ac, char **av)
 	dongles_mtx = malloc(sizeof(pthread_mutex_t) * config->number_of_coders);
 	if (!dongles_mtx)
 		return (free_all(config, NULL, dongles_mtx));
-	pthread_mutex_init(dongles_mtx, NULL);
 	init_all_mutex(config->number_of_coders, dongles_mtx);
 	threads_obj = init_threads_obj(config, get_time(), dongles_mtx);
 	if (!threads_obj)

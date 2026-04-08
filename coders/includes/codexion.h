@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:46:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/31 16:33:58 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/08 16:52:18 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ typedef struct s_prio_q
 	int							*queue;
 	t_thread_data				*td;
 	int							size;
+	int							*enqueue_order;
+	int							seq_counter;
 	char						*sheduler;
 }								t_prio_q;
 

@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 17:05:23 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/03/29 22:19:19 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/08 16:53:26 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int	free_all(t_config *config, t_threads *threads_obj, pthread_mutex_t *mtx)
 		if (threads_obj->pq->queue)
 			free(threads_obj->pq->queue);
 		free(threads_obj->pq);
+		if (threads_obj->pq->enqueue_order)
+    	free(threads_obj->pq->enqueue_order);
 	}
 	if (threads_obj->threads_list)
 		free(threads_obj->threads_list);

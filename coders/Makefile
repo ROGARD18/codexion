@@ -8,7 +8,7 @@ DEPDIR    := .deps
 INCDIR    := includes
 BUILDDIR  := build
 
-SRCFILES  := main.c parsing.c sleep_ms.c mutex_utils.c \
+SRCFILES  := main.c parsing.c mutex_utils.c \
 			 work_functions.c free_all.c monitor_function.c get_time.c \
 			 swap.c priority_queue.c compile_dongles.c init_file.c \
 			 ft_calloc.c
