@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/04/16 19:01:16 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/16 19:04:09 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	debugging(int id, t_thread_data *td)
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is debugging\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
-	usleep(td->config->time_to_debug * 100);
+	usleep(td->config->time_to_debug * 1000);
 }
 
 void	refactoring(int id, t_thread_data *td)
@@ -50,7 +50,7 @@ void	refactoring(int id, t_thread_data *td)
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is refactoring\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
-	usleep(td->config->time_to_refactor * 100);
+	usleep(td->config->time_to_refactor * 1000);
 }
 
 int	do_work(t_thread_data *td)
