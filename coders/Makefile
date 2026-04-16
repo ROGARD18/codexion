@@ -1,7 +1,7 @@
 NAME      := codexion
 CC        := cc
 CFLAGS    := -Wall -Wextra -Werror
-PTHFLAG   := -pthread
+PTHFLAG   := -pthread fsanitize=thread
 
 SRCDIR    := . source source/utils
 DEPDIR    := .deps

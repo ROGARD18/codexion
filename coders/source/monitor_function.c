@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/08 16:54:15 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/16 18:40:27 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	*monitor_work(void *arg)
 				- obj->td[i].last_cmp_start > burnout_delay)
 			{
 				pthread_mutex_lock(obj->print_mtx);
-				printf("%lld %d burned out\n", time - obj->td[i].time_start,
+				printf("%lld %d burned out -----------------\n", time - obj->td[i].time_start,
 					obj->td[i].id);
 				pthread_mutex_unlock(obj->print_mtx);
 				ending_all_threads(obj);

@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/08 16:46:00 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/16 18:50:39 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,25 +33,36 @@ int	take_dongles(t_thread_data *td)
 
 	if (td->id == td->config->number_of_coders)
 	{
+		if (!td->alive)
+		{
+			// pthread_mutex_unlock(td->dongle_left);
+			return (-1);
+		}
 		pthread_mutex_lock(td->dongle_left);
+		print_dongle(td);
 		if (!td->alive)
 		{
 			pthread_mutex_unlock(td->dongle_left);
+			// pthread_mutex_unlock(td->dongle_right);
 			return (-1);
 		}
-		print_dongle(td);
 		pthread_mutex_lock(td->dongle_right);
-		pthread_mutex_lock(td->dongle_left);
-		if (!td->alive)
-		{
-			pthread_mutex_unlock(td->dongle_right);
-			return (-1);
-		}
 		print_dongle(td);
 		return (0);
 	}
+	if (!td->alive)
+	{
+		// pthread_mutex_unlock(td->dongle_left);
+		// pthread_mutex_unlock(td->dongle_right);
+		return (-1);
+	}
 	pthread_mutex_lock(td->dongle_right);
 	print_dongle(td);
+	if (!td->alive)
+	{
+		pthread_mutex_unlock(td->dongle_right);
+		return (-1);
+	}
 	pthread_mutex_lock(td->dongle_left);
 	print_dongle(td);
 	return (0);

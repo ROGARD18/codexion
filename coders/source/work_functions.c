@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/04/08 16:46:30 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/16 19:01:16 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,23 @@ void	compiling(int id, t_thread_data *td)
 	long long	time;
 
 	time = get_time();
-	td->last_cmp_start = time;
+	if (!td->alive)
+	{
+		pthread_mutex_unlock(td->dongle_right);
+		pthread_mutex_unlock(td->dongle_left);
+		return ;
+	}
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is compiling\n", time - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
-	usleep(td->config->time_to_compile * 100);
+	usleep(td->config->time_to_compile * 1000);
+	td->last_cmp_start = get_time();
 }
 
 void	debugging(int id, t_thread_data *td)
 {
+	if (!td->alive)
+		return ;
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is debugging\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
@@ -37,6 +45,8 @@ void	debugging(int id, t_thread_data *td)
 
 void	refactoring(int id, t_thread_data *td)
 {
+	if (!td->alive)
+		return ;
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is refactoring\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
