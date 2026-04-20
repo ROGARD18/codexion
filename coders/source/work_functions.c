@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/04/16 19:04:09 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/20 14:55:38 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	compiling(int id, t_thread_data *td)
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is compiling\n", time - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
-	usleep(td->config->time_to_compile * 1000);
 	td->last_cmp_start = get_time();
+	usleep(td->config->time_to_compile * 1000);
 }
 
 void	debugging(int id, t_thread_data *td)
@@ -72,6 +72,7 @@ int	do_work(t_thread_data *td)
 	if (td->alive == 0)
 		return (-1);
 	refactoring(td->id, td);
+	// printf("%d OK\n", td->id);
 	return (0);
 }
 
