@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:13:23 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/21 00:39:17 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/21 01:48:36 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,15 @@ int	take_dongles(t_thread_data *td)
 		pthread_cond_broadcast(&td->conds[next]);
 	pthread_mutex_unlock(td->queue_mtx);
 	if (td->id % 2 == 0)
-    {
-        pthread_mutex_lock(td->dongle_right);
-        pthread_mutex_lock(td->dongle_left);
-    }
-    else
-    {
-        pthread_mutex_lock(td->dongle_left);
-        pthread_mutex_lock(td->dongle_right);
-    }
+	{
+		pthread_mutex_lock(td->dongle_right);
+		pthread_mutex_lock(td->dongle_left);
+	}
+	else
+	{
+		pthread_mutex_lock(td->dongle_left);
+		pthread_mutex_lock(td->dongle_right);
+	}
 	print_dongle(td);
 	return (0);
 }

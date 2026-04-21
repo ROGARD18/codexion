@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/08 16:47:23 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/21 01:48:53 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 void	create__all_td(t_threads *threads_obj, pthread_mutex_t *dongles_mtx,
 		t_config *config)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (i < threads_obj->number_of_coders)
 	{
 		threads_obj->td[i] = init_td(config, threads_obj, threads_obj->time, i);
@@ -29,7 +31,8 @@ void	create__all_td(t_threads *threads_obj, pthread_mutex_t *dongles_mtx,
 		else
 		{
 			if (i == 0)
-				threads_obj->td[i].dongle_left = &dongles_mtx[config->number_of_coders - 1];
+				threads_obj->td[i].dongle_left = &dongles_mtx[config->number_of_coders
+					- 1];
 			else
 				threads_obj->td[i].dongle_left = &dongles_mtx[i - 1];
 			threads_obj->td[i].dongle_right = &dongles_mtx[i];
