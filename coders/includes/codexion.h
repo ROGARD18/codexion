@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:42:37 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 21:26:36 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 21:58:41 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,5 +132,7 @@ void							heapify_down(t_prio_q *pq, int index,
 void							heapify_up(t_prio_q *pq, int index,
 									char *sheduler);
 void							ending_all_threads(t_threads *threads_obj);
+int								init_conds_in_main(t_threads *obj,
+									t_config *config);
 
 #endif

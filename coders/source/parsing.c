@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:53:19 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 21:11:31 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 22:00:04 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,30 +33,29 @@ static void	*handling_parsing_error(t_error error, t_config *config)
 
 t_config	*parsing(int ac, char **av)
 {
-	t_config	*config;
+	t_config	*cf;
 
-	config = malloc(sizeof(t_config));
-	if (!config)
+	cf = malloc(sizeof(t_config));
+	if (!cf)
 		return (handling_parsing_error(MALLOC_ERROR, NULL));
 	if (ac != 9)
-		return (handling_parsing_error(NUMBER_AC_ERROR, config));
-	config->number_of_coders = atoi(av[1]);
-	if (config->number_of_coders == 1)
-		return (handling_parsing_error(ONE_CODER_ERROR, config));
-	config->time_to_burnout = atoi(av[2]);
-	config->time_to_compile = atoi(av[3]);
-	config->time_to_debug = atoi(av[4]);
-	config->time_to_refactor = atoi(av[5]);
-	config->number_of_compiles_requiered = atoi(av[6]);
-	config->dongle_cooldown = atoi(av[7]);
-	config->sheduler = av[8];
-	if (config->number_of_coders < 1 || config->time_to_burnout < 0
-		|| config->time_to_compile < 0 || config->time_to_debug < 0
-		|| config->time_to_refactor < 0 || config->dongle_cooldown < 0
-		|| config->number_of_compiles_requiered < 0)
-		return (handling_parsing_error(NEGATIVE_ERROR, config));
-	if (strcmp(config->sheduler, "fifo") != 0 && strcmp(config->sheduler,
-			"edf") != 0)
-		return (handling_parsing_error(SHEDULER_ERROR, config));
-	return (config);
+		return (handling_parsing_error(NUMBER_AC_ERROR, cf));
+	cf->number_of_coders = atoi(av[1]);
+	if (cf->number_of_coders == 1)
+		return (handling_parsing_error(ONE_CODER_ERROR, cf));
+	cf->time_to_burnout = atoi(av[2]);
+	cf->time_to_compile = atoi(av[3]);
+	cf->time_to_debug = atoi(av[4]);
+	cf->time_to_refactor = atoi(av[5]);
+	cf->number_of_compiles_requiered = atoi(av[6]);
+	cf->dongle_cooldown = atoi(av[7]);
+	cf->sheduler = av[8];
+	if (cf->number_of_coders < 1 || cf->time_to_burnout < 0
+		|| cf->time_to_compile < 0 || cf->time_to_debug < 0
+		|| cf->time_to_refactor < 0 || cf->dongle_cooldown < 0
+		|| cf->number_of_compiles_requiered < 0)
+		return (handling_parsing_error(NEGATIVE_ERROR, cf));
+	if (strcmp(cf->sheduler, "fifo") != 0 && strcmp(cf->sheduler, "edf") != 0)
+		return (handling_parsing_error(SHEDULER_ERROR, cf));
+	return (cf);
 }

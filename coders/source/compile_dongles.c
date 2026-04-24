@@ -6,11 +6,24 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:43:09 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 21:39:58 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 22:09:52 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+static void	print_dongle(t_thread_data *td)
+{
+	pthread_mutex_lock(td->print_mtx);
+	if (is_alive(td))
+	{
+		printf("%lld %d has taken a dongle\n", get_time() - td->time_start,
+			td->id);
+		printf("%lld %d has taken a dongle\n", get_time() - td->time_start,
+			td->id);
+	}
+	pthread_mutex_unlock(td->print_mtx);
+}
 
 static void	lock_dongle_left(t_thread_data *td)
 {
@@ -52,8 +65,6 @@ static void	lock_dongle_right(t_thread_data *td)
 
 int	take_dongles(t_thread_data *td)
 {
-	int	next;
-
 	if (pthread_mutex_lock(td->queue_mtx) != 0)
 		return (-1);
 	enqueue(td->pq, td->id - 1, td->config->number_of_coders,
@@ -66,20 +77,17 @@ int	take_dongles(t_thread_data *td)
 		return (-1);
 	}
 	dequeue(td->pq, td->config->sheduler);
-	next = peek(td->pq);
-	if (next != -1)
-		pthread_cond_broadcast(&td->conds[next]);
+	if (peek(td->pq) != -1)
+		pthread_cond_broadcast(&td->conds[peek(td->pq)]);
 	pthread_mutex_unlock(td->queue_mtx);
 	if (td->id % 2 == 0)
-	{
 		lock_dongle_left(td);
+	if (td->id % 2 == 0)
 		lock_dongle_right(td);
-	}
-	else
-	{
+	if (td->id % 2 != 0)
 		lock_dongle_right(td);
+	if (td->id % 2 != 0)
 		lock_dongle_left(td);
-	}
 	print_dongle(td);
 	return (0);
 }

@@ -6,11 +6,24 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:42:52 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 21:40:13 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 22:21:23 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+int	init_conds_in_main(t_threads *obj, t_config *config)
+{
+	int	i;
+
+	i = 0;
+	while (i < config->number_of_coders)
+	{
+		if (pthread_cond_init(&obj->conds[i++], NULL) != 0)
+			return (-1);
+	}
+	return (0);
+}
 
 t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td,
 		char *sheduler)
@@ -60,15 +73,8 @@ t_thread_data	*init_td(t_config *config, t_threads *obj, long long time,
 	return (td);
 }
 
-t_threads	*init_threads_obj(t_config *config, long long time,
-		pthread_mutex_t *d_mtx)
+static int	help_init_threads_obj(t_threads *obj, t_config *config)
 {
-	t_threads	*obj;
-	int			i;
-
-	obj = ft_calloc(1, sizeof(t_threads));
-	if (!obj)
-		return (NULL);
 	obj->state_mtx = malloc(sizeof(pthread_mutex_t) * config->number_of_coders);
 	obj->print_mtx = malloc(sizeof(pthread_mutex_t));
 	obj->queue_mtx = malloc(sizeof(pthread_mutex_t));
@@ -79,10 +85,24 @@ t_threads	*init_threads_obj(t_config *config, long long time,
 	obj->dgl_conds = malloc(sizeof(pthread_cond_t) * config->number_of_coders);
 	if (!obj->state_mtx || !obj->print_mtx || !obj->queue_mtx || !obj->conds
 		|| !obj->dgl_availables || !obj->dgl_mtxs || !obj->dgl_conds)
-		return (NULL);
+		return (-1);
 	if (pthread_mutex_init(obj->print_mtx, NULL) != 0)
-		return (NULL);
+		return (-1);
 	if (pthread_mutex_init(obj->queue_mtx, NULL) != 0)
+		return (-1);
+	return (0);
+}
+
+t_threads	*init_threads_obj(t_config *config, long long time,
+		pthread_mutex_t *d_mtx)
+{
+	t_threads	*obj;
+	int			i;
+
+	obj = ft_calloc(1, sizeof(t_threads));
+	if (!obj)
+		return (NULL);
+	if (help_init_threads_obj(obj, config) == -1)
 		return (NULL);
 	i = 0;
 	while (i < config->number_of_coders)

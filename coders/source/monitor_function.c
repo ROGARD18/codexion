@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 20:51:51 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 21:40:00 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 22:15:29 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,31 @@ bool	all_finish(t_threads *obj)
 	return (true);
 }
 
+static int	check_death(t_threads *obj, int i)
+{
+	long long	last;
+
+	if (pthread_mutex_lock(&obj->state_mtx[i]) == 0)
+	{
+		last = obj->td[i].last_cmp_start;
+		pthread_mutex_unlock(&obj->state_mtx[i]);
+		if (get_time() - last > obj->td[i].config->time_to_burnout
+			&& pthread_mutex_lock(obj->print_mtx) == 0)
+		{
+			printf("%lld %d burned out\n", get_time() - obj->td[i].time_start,
+				obj->td[i].id);
+			ending_all_threads(obj);
+			pthread_mutex_unlock(obj->print_mtx);
+			return (-1);
+		}
+	}
+	return (0);
+}
+
 void	*monitor_work(void *arg)
 {
 	t_threads	*obj;
 	int			i;
-	long long	last_meal;
 
 	obj = (t_threads *)arg;
 	while (1)
@@ -47,22 +67,8 @@ void	*monitor_work(void *arg)
 		i = 0;
 		while (i < obj->number_of_coders)
 		{
-			if (pthread_mutex_lock(&obj->state_mtx[i]) == 0)
-			{
-				last_meal = obj->td[i].last_cmp_start;
-				pthread_mutex_unlock(&obj->state_mtx[i]);
-				if (get_time() - last_meal > obj->td[i].config->time_to_burnout)
-				{
-					if (pthread_mutex_lock(obj->print_mtx) == 0)
-					{
-						printf("%lld %d burned out\n", get_time()
-							- obj->td[i].time_start, obj->td[i].id);
-						ending_all_threads(obj);
-						pthread_mutex_unlock(obj->print_mtx);
-					}
-					return (NULL);
-				}
-			}
+			if (check_death(obj, i) == -1)
+				return (NULL);
 			i++;
 		}
 		if (all_finish(obj))

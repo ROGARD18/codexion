@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 20:41:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 22:04:22 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,11 @@ void	heapify_down(t_prio_q *pq, int index, char *sheduler)
 	left = 2 * index + 1;
 	right = 2 * index + 2;
 	prio_smallest = get_priority(pq, pq->queue[smallest], sheduler);
-	if (left < pq->size)
+	if (left < pq->size && get_priority(pq, pq->queue[left],
+			sheduler) < prio_smallest)
 	{
-		if (get_priority(pq, pq->queue[left], sheduler) < prio_smallest)
-		{
-			smallest = left;
-			prio_smallest = get_priority(pq, pq->queue[smallest], sheduler);
-		}
+		smallest = left;
+		prio_smallest = get_priority(pq, pq->queue[smallest], sheduler);
 	}
 	if (right < pq->size)
 	{

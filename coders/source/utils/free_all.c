@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 17:05:23 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/04/24 20:34:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 22:18:41 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,28 +37,8 @@ void	free_all_helper(t_threads *threads_obj)
 	}
 }
 
-int	free_all(t_config *config, t_threads *threads_obj, pthread_mutex_t *mtx)
+static void	help_free_obj(t_threads *threads_obj, int nb, int i)
 {
-	int	i;
-	int	nb;
-
-	nb = config->number_of_coders;
-	i = 0;
-	if (config)
-		free(config);
-	if (mtx)
-		free(mtx);
-	if (!threads_obj)
-		return (-1);
-	free_all_helper(threads_obj);
-	if (threads_obj->pq)
-	{
-		if (threads_obj->pq->queue)
-			free(threads_obj->pq->queue);
-		if (threads_obj->pq->enqueue_order)
-			free(threads_obj->pq->enqueue_order);
-		free(threads_obj->pq);
-	}
 	if (threads_obj->threads_list)
 		free(threads_obj->threads_list);
 	if (threads_obj->td)
@@ -84,6 +64,31 @@ int	free_all(t_config *config, t_threads *threads_obj, pthread_mutex_t *mtx)
 			pthread_mutex_destroy(&threads_obj->state_mtx[i++]);
 		free(threads_obj->state_mtx);
 	}
+}
+
+int	free_all(t_config *config, t_threads *threads_obj, pthread_mutex_t *mtx)
+{
+	int	i;
+	int	nb;
+
+	nb = config->number_of_coders;
+	i = 0;
+	if (config)
+		free(config);
+	if (mtx)
+		free(mtx);
+	if (!threads_obj)
+		return (-1);
+	free_all_helper(threads_obj);
+	if (threads_obj->pq)
+	{
+		if (threads_obj->pq->queue)
+			free(threads_obj->pq->queue);
+		if (threads_obj->pq->enqueue_order)
+			free(threads_obj->pq->enqueue_order);
+		free(threads_obj->pq);
+	}
+	help_free_obj(threads_obj, nb, i);
 	free(threads_obj);
 	return (-1);
 }
