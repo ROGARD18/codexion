@@ -3,23 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   mutex_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rogard-antoine <rogard-antoine@student.    +#+  +:+       +#+        */
+/*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 16:49:32 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/03/17 17:03:23 by rogard-anto      ###   ########.fr       */
+/*   Updated: 2026/04/24 21:17:38 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pthread.h>
 
-void	init_all_mutex(int nb_coders, pthread_mutex_t *mtx)
+int	init_all_mutex(int nb_coders, pthread_mutex_t *mtxs)
 {
-	while (nb_coders--)
-		pthread_mutex_init(&(*mtx++), NULL);
+	int	i;
+
+	i = 0;
+	while (i < nb_coders)
+	{
+		if (pthread_mutex_init(&mtxs[i], NULL) != 0)
+		{
+			while (i > 0)
+				pthread_mutex_destroy(&mtxs[--i]);
+			return (-1);
+		}
+		i++;
+	}
+	return (0);
 }
 
-void	destroy_all_mutex(int nb_coders, pthread_mutex_t *mtx)
+void	destroy_all_mutex(int nb_coders, pthread_mutex_t *mtxs)
 {
 	while (nb_coders--)
-		pthread_mutex_destroy(&(*mtx++));
+		pthread_mutex_destroy(&mtxs[nb_coders]);
 }

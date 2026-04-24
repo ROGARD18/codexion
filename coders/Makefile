@@ -13,7 +13,7 @@ BUILDDIR  := build
 SRCFILES  := main.c parsing.c mutex_utils.c \
              work_functions.c free_all.c monitor_function.c get_time.c \
              swap.c priority_queue.c compile_dongles.c init_file.c \
-             ft_calloc.c is_alive.c priority_queue2.c
+             ft_calloc.c is_alive.c priority_queue2.c ending_all_threads.c
 
 OBJS      := $(addprefix $(BUILDDIR)/,$(SRCFILES:.c=.o))
 HEADERS   := $(INCDIR)/codexion.h

@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:43:09 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 20:32:35 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 21:39:58 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,13 @@ static void	lock_dongle_left(t_thread_data *td)
 {
 	struct timespec	target;
 
-	pthread_mutex_lock(td->dongle_left);
-	pthread_mutex_lock(td->dgl_mtx_left);
+	if (pthread_mutex_lock(td->dongle_left) != 0)
+		return ;
+	if (pthread_mutex_lock(td->dgl_mtx_left) != 0)
+	{
+		pthread_mutex_unlock(td->dongle_left);
+		return ;
+	}
 	while (get_time() < *(td->dgl_avail_left))
 	{
 		target = get_interval();
@@ -30,8 +35,13 @@ static void	lock_dongle_right(t_thread_data *td)
 {
 	struct timespec	target;
 
-	pthread_mutex_lock(td->dongle_right);
-	pthread_mutex_lock(td->dgl_mtx_right);
+	if (pthread_mutex_lock(td->dongle_right) != 0)
+		return ;
+	if (pthread_mutex_lock(td->dgl_mtx_right) != 0)
+	{
+		pthread_mutex_unlock(td->dongle_right);
+		return ;
+	}
 	while (get_time() < *(td->dgl_avail_right))
 	{
 		target = get_interval();
@@ -40,30 +50,21 @@ static void	lock_dongle_right(t_thread_data *td)
 	pthread_mutex_unlock(td->dgl_mtx_right);
 }
 
-static void	print_dongle(t_thread_data *td)
-{
-	pthread_mutex_lock(td->print_mtx);
-	if (is_alive(td))
-	{
-		printf("%lld %d has taken a dongle\n", get_time() - td->time_start,
-			td->id);
-		printf("%lld %d has taken a dongle\n", get_time() - td->time_start,
-			td->id);
-	}
-	pthread_mutex_unlock(td->print_mtx);
-}
-
 int	take_dongles(t_thread_data *td)
 {
 	int	next;
 
-	pthread_mutex_lock(td->queue_mtx);
+	if (pthread_mutex_lock(td->queue_mtx) != 0)
+		return (-1);
 	enqueue(td->pq, td->id - 1, td->config->number_of_coders,
 		td->config->sheduler);
 	while (peek(td->pq) != (td->id - 1) && is_alive(td))
 		pthread_cond_wait(&td->conds[td->id - 1], td->queue_mtx);
 	if (!is_alive(td))
-		return (pthread_mutex_unlock(td->queue_mtx), -1);
+	{
+		pthread_mutex_unlock(td->queue_mtx);
+		return (-1);
+	}
 	dequeue(td->pq, td->config->sheduler);
 	next = peek(td->pq);
 	if (next != -1)
@@ -85,15 +86,19 @@ int	take_dongles(t_thread_data *td)
 
 void	released_dongles(t_thread_data *td)
 {
-	long long end_time;
+	long long	end_time;
 
 	end_time = get_time() + td->config->dongle_cooldown;
-	pthread_mutex_lock(td->dgl_mtx_left);
-	*(td->dgl_avail_left) = end_time;
-	pthread_mutex_unlock(td->dgl_mtx_left);
-	pthread_mutex_lock(td->dgl_mtx_right);
-	*(td->dgl_avail_right) = end_time;
-	pthread_mutex_unlock(td->dgl_mtx_right);
+	if (pthread_mutex_lock(td->dgl_mtx_left) == 0)
+	{
+		*(td->dgl_avail_left) = end_time;
+		pthread_mutex_unlock(td->dgl_mtx_left);
+	}
+	if (pthread_mutex_lock(td->dgl_mtx_right) == 0)
+	{
+		*(td->dgl_avail_right) = end_time;
+		pthread_mutex_unlock(td->dgl_mtx_right);
+	}
 	pthread_mutex_unlock(td->dongle_left);
 	pthread_mutex_unlock(td->dongle_right);
 }

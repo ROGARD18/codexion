@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:42:52 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 20:29:08 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 21:40:13 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td,
 	pq = malloc(sizeof(t_prio_q));
 	if (!pq)
 		return (NULL);
-	pq->queue = malloc(sizeof(int) * number_of_coders);
 	pq->td = td;
 	pq->size = 0;
 	pq->sheduler = sheduler;
+	pq->queue = malloc(sizeof(int) * number_of_coders);
 	pq->enqueue_order = malloc(sizeof(int) * number_of_coders);
 	if (!pq->queue || !pq->enqueue_order)
 		return (NULL);
@@ -63,8 +63,8 @@ t_thread_data	*init_td(t_config *config, t_threads *obj, long long time,
 t_threads	*init_threads_obj(t_config *config, long long time,
 		pthread_mutex_t *d_mtx)
 {
-	t_threads *obj;
-	int i;
+	t_threads	*obj;
+	int			i;
 
 	obj = ft_calloc(1, sizeof(t_threads));
 	if (!obj)
@@ -77,14 +77,22 @@ t_threads	*init_threads_obj(t_config *config, long long time,
 			sizeof(long long));
 	obj->dgl_mtxs = malloc(sizeof(pthread_mutex_t) * config->number_of_coders);
 	obj->dgl_conds = malloc(sizeof(pthread_cond_t) * config->number_of_coders);
-	pthread_mutex_init(obj->print_mtx, NULL);
-	pthread_mutex_init(obj->queue_mtx, NULL);
+	if (!obj->state_mtx || !obj->print_mtx || !obj->queue_mtx || !obj->conds
+		|| !obj->dgl_availables || !obj->dgl_mtxs || !obj->dgl_conds)
+		return (NULL);
+	if (pthread_mutex_init(obj->print_mtx, NULL) != 0)
+		return (NULL);
+	if (pthread_mutex_init(obj->queue_mtx, NULL) != 0)
+		return (NULL);
 	i = 0;
 	while (i < config->number_of_coders)
 	{
-		pthread_mutex_init(&obj->dgl_mtxs[i], NULL);
-		pthread_mutex_init(&obj->state_mtx[i], NULL);
-		pthread_cond_init(&obj->dgl_conds[i], NULL);
+		if (pthread_mutex_init(&obj->dgl_mtxs[i], NULL) != 0)
+			return (NULL);
+		if (pthread_mutex_init(&obj->state_mtx[i], NULL) != 0)
+			return (NULL);
+		if (pthread_cond_init(&obj->dgl_conds[i], NULL) != 0)
+			return (NULL);
 		i++;
 	}
 	obj->dongles_mtx = d_mtx;

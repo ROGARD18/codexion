@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:42:37 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/24 20:44:06 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 21:26:36 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void							refactoring(int id, t_thread_data *td);
 void							*monitor_work(void *arg);
 int								take_dongles(t_thread_data *td);
 void							released_dongles(t_thread_data *td);
-void							init_all_mutex(int nb_coders,
+int								init_all_mutex(int nb_coders,
 									pthread_mutex_t *mtx);
 void							destroy_all_mutex(int nb_coders,
 									pthread_mutex_t *mtx);
@@ -131,5 +131,6 @@ void							heapify_down(t_prio_q *pq, int index,
 									char *sheduler);
 void							heapify_up(t_prio_q *pq, int index,
 									char *sheduler);
+void							ending_all_threads(t_threads *threads_obj);
 
 #endif
