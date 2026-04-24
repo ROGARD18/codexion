@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:44:54 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/08 16:53:48 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 20:41:48 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 #include <stdio.h>
 #include <string.h>
 
-/*
-** Returns the priority value for a given coder index.
-** FIFO : order of arrival in the queue (smaller seq = higher priority).
-** EDF  : last_cmp_start (= deadline - time_to_burnout, constant offset so
-**        ordering is identical to comparing deadlines directly).
-*/
+int	peek(t_prio_q *pq)
+{
+	if (pq->size == 0)
+		return (-1);
+	return (pq->queue[0]);
+}
+
 static long long	get_priority(t_prio_q *pq, int coder_index, char *sheduler)
 {
 	if (strcmp(sheduler, "fifo") == 0)
@@ -47,23 +48,26 @@ void	heapify_up(t_prio_q *pq, int index, char *sheduler)
 
 void	heapify_down(t_prio_q *pq, int index, char *sheduler)
 {
-	int	smallest;
-	int	left;
-	int	right;
+	int			smallest;
+	int			left;
+	int			right;
+	long long	prio_smallest;
 
 	smallest = index;
 	left = 2 * index + 1;
 	right = 2 * index + 2;
+	prio_smallest = get_priority(pq, pq->queue[smallest], sheduler);
 	if (left < pq->size)
 	{
-		if (get_priority(pq, pq->queue[left], sheduler) < get_priority(pq,
-				pq->queue[smallest], sheduler))
+		if (get_priority(pq, pq->queue[left], sheduler) < prio_smallest)
+		{
 			smallest = left;
+			prio_smallest = get_priority(pq, pq->queue[smallest], sheduler);
+		}
 	}
 	if (right < pq->size)
 	{
-		if (get_priority(pq, pq->queue[right], sheduler) < get_priority(pq,
-				pq->queue[smallest], sheduler))
+		if (get_priority(pq, pq->queue[right], sheduler) < prio_smallest)
 			smallest = right;
 	}
 	if (smallest != index)
@@ -71,35 +75,4 @@ void	heapify_down(t_prio_q *pq, int index, char *sheduler)
 		swap(&pq->queue[index], &pq->queue[smallest]);
 		heapify_down(pq, smallest, sheduler);
 	}
-}
-
-int	enqueue(t_prio_q *pq, int coder_index, int number_of_coders, char *sheduler)
-{
-	if (pq->size >= number_of_coders)
-	{
-		printf("NOT ENQUE !\n");
-		return (-1);
-	}
-	pq->enqueue_order[coder_index] = pq->seq_counter++;
-	pq->queue[pq->size] = coder_index;
-	heapify_up(pq, pq->size, sheduler);
-	pq->size++;
-	return (0);
-}
-
-int	dequeue(t_prio_q *pq, char *sheduler)
-{
-	if (pq->size == 0)
-		return (-1);
-	pq->queue[0] = pq->queue[pq->size - 1];
-	pq->size--;
-	heapify_down(pq, 0, sheduler);
-	return (0);
-}
-
-int	peek(t_prio_q *pq)
-{
-	if (pq->size == 0)
-		return (-1);
-	return (pq->queue[0]);
 }

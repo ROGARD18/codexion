@@ -6,7 +6,7 @@
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 00:53:19 by anrogard          #+#    #+#             */
-/*   Updated: 2026/03/29 19:27:35 by anrogard         ###   ########.fr       */
+/*   Updated: 2026/04/24 20:40:26 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static void	*handling_parsing_error(t_error error, t_config *config)
 		printf("The number of arguments must be 8.\n");
 	else if (error == NEGATIVE_ERROR)
 		printf("Arguments cannot be negative !\n");
+	else if (error == ONE_CODER_ERROR)
+		printf("Need more than one coder !\n");
 	else if (error == SHEDULER_ERROR)
 		printf("The last argument (sheduler) must be 'fifo' or 'edf'.");
 	if (config)
@@ -39,6 +41,8 @@ t_config	*parsing(int ac, char **av)
 	if (ac != 9)
 		return (handling_parsing_error(NUMBER_AC_ERROR, config));
 	config->number_of_coders = atoi(av[1]);
+	if (config->number_of_coders == 1)
+		return (handling_parsing_error(ONE_CODER_ERROR, config));
 	config->time_to_burnout = atoi(av[2]);
 	config->time_to_compile = atoi(av[3]);
 	config->time_to_debug = atoi(av[4]);

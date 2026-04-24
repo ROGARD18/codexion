@@ -5,76 +5,89 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/29 21:14:26 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/08 16:52:41 by anrogard         ###   ########.fr       */
+/*   Created: 2026/04/24 18:42:52 by anrogard          #+#    #+#             */
+/*   Updated: 2026/04/24 20:29:08 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <codexion.h>
-#include <stdlib.h>
-
-t_thread_data	init_td(t_config *config, t_threads *threads_obj,
-		long long time, int i)
-{
-	t_thread_data	td;
-
-	td.id = i + 1;
-	td.compiled_time = 0;
-	td.time_start = time;
-	td.config = config;
-	td.last_cmp_start = time;
-	td.alive = true;
-	td.conds = threads_obj->conds;
-	td.pq = threads_obj->pq;
-	td.print_mtx = threads_obj->print_mtx;
-	td.queue_mtx = threads_obj->queue_mtx;
-	return (td);
-}
+#include "codexion.h"
 
 t_prio_q	*init_prio_q(int number_of_coders, t_thread_data *td,
 		char *sheduler)
 {
 	t_prio_q	*pq;
-	int			i;
 
-	i = 0;
 	pq = malloc(sizeof(t_prio_q));
 	if (!pq)
-		return ((t_prio_q *)NULL);
+		return (NULL);
 	pq->queue = malloc(sizeof(int) * number_of_coders);
 	pq->td = td;
 	pq->size = 0;
 	pq->sheduler = sheduler;
 	pq->enqueue_order = malloc(sizeof(int) * number_of_coders);
-	if (!pq->enqueue_order)
+	if (!pq->queue || !pq->enqueue_order)
 		return (NULL);
 	pq->seq_counter = 0;
 	return (pq);
 }
 
-t_threads	*init_threads_obj(t_config *config, long long time,
-		pthread_mutex_t *dongles_mtx)
+t_thread_data	*init_td(t_config *config, t_threads *obj, long long time,
+		int i)
 {
-	t_threads	*threads_obj;
+	t_thread_data	*td;
+	int				next;
 
-	threads_obj = malloc(sizeof(t_threads));
-	if (!threads_obj)
+	td = ft_calloc(1, sizeof(t_thread_data));
+	if (!td)
 		return (NULL);
-	threads_obj->pq = NULL;
-	threads_obj->td = ft_calloc(sizeof(t_thread_data),
-			config->number_of_coders);
-	threads_obj->threads_list = NULL;
-	threads_obj->queue_mtx = malloc(sizeof(pthread_mutex_t));
-	threads_obj->print_mtx = malloc(sizeof(pthread_mutex_t));
-	if (!threads_obj->queue_mtx || !threads_obj->print_mtx)
+	next = (i + 1) % config->number_of_coders;
+	td->id = i + 1;
+	td->time_start = time;
+	td->config = config;
+	td->last_cmp_start = time;
+	td->alive = true;
+	td->conds = obj->conds;
+	td->pq = obj->pq;
+	td->print_mtx = obj->print_mtx;
+	td->queue_mtx = obj->queue_mtx;
+	td->dgl_avail_left = &obj->dgl_availables[i];
+	td->dgl_mtx_left = &obj->dgl_mtxs[i];
+	td->dgl_cond_left = &obj->dgl_conds[i];
+	td->dgl_avail_right = &obj->dgl_availables[next];
+	td->dgl_mtx_right = &obj->dgl_mtxs[next];
+	td->dgl_cond_right = &obj->dgl_conds[next];
+	td->state_mtx = &obj->state_mtx[i];
+	return (td);
+}
+
+t_threads	*init_threads_obj(t_config *config, long long time,
+		pthread_mutex_t *d_mtx)
+{
+	t_threads *obj;
+	int i;
+
+	obj = ft_calloc(1, sizeof(t_threads));
+	if (!obj)
 		return (NULL);
-	pthread_mutex_init(threads_obj->queue_mtx, NULL);
-	pthread_mutex_init(threads_obj->print_mtx, NULL);
-	threads_obj->conds = malloc(sizeof(pthread_cond_t)
-			* config->number_of_coders);
-	if (!threads_obj->conds)
-		return (NULL);
-	threads_obj->time = time;
-	threads_obj->dongles_mtx = dongles_mtx;
-	return (threads_obj);
+	obj->state_mtx = malloc(sizeof(pthread_mutex_t) * config->number_of_coders);
+	obj->print_mtx = malloc(sizeof(pthread_mutex_t));
+	obj->queue_mtx = malloc(sizeof(pthread_mutex_t));
+	obj->conds = malloc(sizeof(pthread_cond_t) * config->number_of_coders);
+	obj->dgl_availables = ft_calloc(config->number_of_coders,
+			sizeof(long long));
+	obj->dgl_mtxs = malloc(sizeof(pthread_mutex_t) * config->number_of_coders);
+	obj->dgl_conds = malloc(sizeof(pthread_cond_t) * config->number_of_coders);
+	pthread_mutex_init(obj->print_mtx, NULL);
+	pthread_mutex_init(obj->queue_mtx, NULL);
+	i = 0;
+	while (i < config->number_of_coders)
+	{
+		pthread_mutex_init(&obj->dgl_mtxs[i], NULL);
+		pthread_mutex_init(&obj->state_mtx[i], NULL);
+		pthread_cond_init(&obj->dgl_conds[i], NULL);
+		i++;
+	}
+	obj->dongles_mtx = d_mtx;
+	obj->time = time;
+	return (obj);
 }

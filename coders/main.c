@@ -5,96 +5,86 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/16 00:45:44 by anrogard          #+#    #+#             */
-/*   Updated: 2026/04/21 01:48:53 by anrogard         ###   ########.fr       */
+/*   Created: 2026/04/24 18:43:28 by anrogard          #+#    #+#             */
+/*   Updated: 2026/04/24 20:39:22 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <stdio.h>
-#include <stdlib.h>
 
-void	create__all_td(t_threads *threads_obj, pthread_mutex_t *dongles_mtx,
-		t_config *config)
+static int	create__all_td(t_threads *obj, pthread_mutex_t *d_mtx,
+		t_config *conf)
 {
-	int	i;
+	int				i;
+	t_thread_data	*tmp;
 
+	obj->td = malloc(sizeof(t_thread_data) * conf->number_of_coders);
+	if (!obj->td)
+		return (0);
 	i = 0;
-	while (i < threads_obj->number_of_coders)
+	while (i < obj->number_of_coders)
 	{
-		threads_obj->td[i] = init_td(config, threads_obj, threads_obj->time, i);
-		if (config->number_of_coders == 1)
-		{
-			threads_obj->td[i].dongle_left = NULL;
-			threads_obj->td[i].dongle_right = &dongles_mtx[i];
-		}
-		else
-		{
-			if (i == 0)
-				threads_obj->td[i].dongle_left = &dongles_mtx[config->number_of_coders
-					- 1];
-			else
-				threads_obj->td[i].dongle_left = &dongles_mtx[i - 1];
-			threads_obj->td[i].dongle_right = &dongles_mtx[i];
-		}
+		tmp = init_td(conf, obj, obj->time, i);
+		if (!tmp)
+			return (0);
+		obj->td[i] = *tmp;
+		free(tmp);
+		obj->td[i].dongle_left = &d_mtx[i];
+		obj->td[i].dongle_right = &d_mtx[(i + 1) % conf->number_of_coders];
 		i++;
 	}
+	return (1);
 }
 
-int	create_threads(t_threads *threads_obj, t_config *config,
-		pthread_mutex_t *dongles_mtx)
+int	create_threads(t_threads *obj, t_config *conf, pthread_mutex_t *d_mtx)
 {
 	int			i;
 	pthread_t	monitor;
 
-	threads_obj->number_of_coders = config->number_of_coders;
-	threads_obj->threads_list = malloc(sizeof(pthread_t)
-			* config->number_of_coders);
-	if (!threads_obj->threads_list)
+	obj->number_of_coders = conf->number_of_coders;
+	obj->threads_list = malloc(sizeof(pthread_t) * conf->number_of_coders);
+	obj->time = get_time();
+	if (!obj->threads_list || !create__all_td(obj, d_mtx, conf))
 		return (-1);
+	obj->pq->td = obj->td;
 	i = 0;
-	create__all_td(threads_obj, dongles_mtx, config);
-	while (i < config->number_of_coders)
+	while (i < conf->number_of_coders)
 	{
-		pthread_create(&threads_obj->threads_list[i], NULL, thread_work,
-			&threads_obj->td[i]);
+		pthread_create(&obj->threads_list[i], NULL, thread_work, &obj->td[i]);
 		i++;
 	}
-	pthread_create(&monitor, NULL, monitor_work, threads_obj);
+	pthread_create(&monitor, NULL, monitor_work, obj);
 	i = 0;
-	while (i < config->number_of_coders)
-		pthread_join(threads_obj->threads_list[i++], NULL);
+	while (i < conf->number_of_coders)
+		pthread_join(obj->threads_list[i++], NULL);
 	pthread_join(monitor, NULL);
-	destroy_all_mutex(config->number_of_coders, dongles_mtx);
+	destroy_all_mutex(conf->number_of_coders, d_mtx);
 	return (0);
 }
 
 int	main(int ac, char **av)
 {
+	t_config		*conf;
+	t_threads		*obj;
+	pthread_mutex_t	*d_mtx;
 	int				i;
-	t_config		*config;
-	t_threads		*threads_obj;
-	pthread_mutex_t	*dongles_mtx;
 
-	i = -1;
-	config = parsing(ac, av);
-	if (!config)
-		return (free_all(config, NULL, NULL));
-	dongles_mtx = malloc(sizeof(pthread_mutex_t) * config->number_of_coders);
-	if (!dongles_mtx)
-		return (free_all(config, NULL, dongles_mtx));
-	init_all_mutex(config->number_of_coders, dongles_mtx);
-	threads_obj = init_threads_obj(config, get_time(), dongles_mtx);
-	if (!threads_obj)
-		return (free_all(config, threads_obj, NULL));
-	threads_obj->pq = init_prio_q(config->number_of_coders, threads_obj->td,
-			config->sheduler);
-	if (!threads_obj->pq)
-		return (free_all(config, threads_obj, NULL));
-	while (i++ < config->number_of_coders - 1)
-		pthread_cond_init(&threads_obj->conds[i], NULL);
-	if (create_threads(threads_obj, config, dongles_mtx))
-		return (free_all(config, threads_obj, dongles_mtx));
-	free_all(config, threads_obj, dongles_mtx);
+	conf = parsing(ac, av);
+	if (!conf)
+		return (1);
+	d_mtx = malloc(sizeof(pthread_mutex_t) * conf->number_of_coders);
+	if (!d_mtx)
+		return (free_all(conf, NULL, NULL));
+	init_all_mutex(conf->number_of_coders, d_mtx);
+	obj = init_threads_obj(conf, get_time(), d_mtx);
+	if (!obj)
+		return (free_all(conf, NULL, d_mtx));
+	obj->pq = init_prio_q(conf->number_of_coders, NULL, conf->sheduler);
+	i = 0;
+	while (obj->pq && i < conf->number_of_coders)
+		pthread_cond_init(&obj->conds[i++], NULL);
+	if (!obj->pq || create_threads(obj, conf, d_mtx) == -1)
+		return (free_all(conf, obj, d_mtx));
+	free_all(conf, obj, d_mtx);
 	return (0);
 }

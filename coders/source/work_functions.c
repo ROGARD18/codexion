@@ -5,38 +5,37 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anrogard <anrogard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/17 16:51:40 by rogard-anto       #+#    #+#             */
-/*   Updated: 2026/04/21 00:54:43 by anrogard         ###   ########.fr       */
+/*   Created: 2026/04/24 18:43:19 by anrogard          #+#    #+#             */
+/*   Updated: 2026/04/24 20:30:50 by anrogard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 void	compiling(int id, t_thread_data *td)
 {
-	long long	time;
-
-	time = get_time();
-	if (!td->alive)
-	{
-		pthread_mutex_unlock(td->dongle_right);
-		pthread_mutex_unlock(td->dongle_left);
+	if (!is_alive(td))
 		return ;
-	}
 	pthread_mutex_lock(td->print_mtx);
-	printf("%lld %d is compiling\n", time - td->time_start, id);
+	printf("%lld %d is compiling\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
+	
+	pthread_mutex_lock(td->state_mtx);
 	td->last_cmp_start = get_time();
+	pthread_mutex_unlock(td->state_mtx);
+	
 	usleep(td->config->time_to_compile * 1000);
 }
 
 void	debugging(int id, t_thread_data *td)
 {
+	pthread_mutex_lock(td->state_mtx);
 	if (!td->alive)
+	{
+		pthread_mutex_unlock(td->state_mtx);
 		return ;
+	}
+	pthread_mutex_unlock(td->state_mtx);
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is debugging\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
@@ -45,8 +44,13 @@ void	debugging(int id, t_thread_data *td)
 
 void	refactoring(int id, t_thread_data *td)
 {
+	pthread_mutex_lock(td->state_mtx);
 	if (!td->alive)
+	{
+		pthread_mutex_unlock(td->state_mtx);
 		return ;
+	}
+	pthread_mutex_unlock(td->state_mtx);
 	pthread_mutex_lock(td->print_mtx);
 	printf("%lld %d is refactoring\n", get_time() - td->time_start, id);
 	pthread_mutex_unlock(td->print_mtx);
@@ -55,14 +59,16 @@ void	refactoring(int id, t_thread_data *td)
 
 int	do_work(t_thread_data *td)
 {
-	if (!td->alive || take_dongles(td) == -1)
+	if (!is_alive(td))
+		return (-1);
+	if (take_dongles(td) == -1)
 		return (-1);
 	compiling(td->id, td);
 	released_dongles(td);
-	if (!td->alive)
+	if (!is_alive(td))
 		return (-1);
 	debugging(td->id, td);
-	if (!td->alive)
+	if (!is_alive(td))
 		return (-1);
 	refactoring(td->id, td);
 	return (0);
@@ -73,22 +79,16 @@ void	*thread_work(void *arg)
 	t_thread_data	*td;
 	int				i;
 
-	i = -1;
 	td = (t_thread_data *)arg;
-	if (!td->dongle_left)
+	i = 0;
+	while (i < td->config->number_of_compiles_requiered)
 	{
-		printf("There is only one dongle on the table.");
-		td->alive = 0;
-		return (NULL);
-	}
-	while (i < td->config->number_of_compiles_requiered - 1)
-	{
-		if (!td->alive || do_work(td) == -1)
+		if (!is_alive(td) || do_work(td) == -1)
 			return (NULL);
 		i++;
 	}
-	pthread_mutex_lock(td->queue_mtx);
-	td->alive = 0;
-	pthread_mutex_unlock(td->queue_mtx);
+	pthread_mutex_lock(td->state_mtx);
+	td->alive = false;
+	pthread_mutex_unlock(td->state_mtx);
 	return (NULL);
 }
